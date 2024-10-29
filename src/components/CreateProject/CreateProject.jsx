@@ -8,7 +8,7 @@ import {
   Grid,
   Breadcrumbs,
 } from "@mui/material";
-import { DatePicker } from "@mui/lab";
+import { DatePicker } from "@mui/x-date-pickers";
 import { Link } from "react-router-dom";
 
 const CreateProject = () => {
