@@ -82,22 +82,27 @@ export default function AppLayout() {
           <List>
             {[
               {
-                text: "Quản Lý Dự Án",
+                text: "Dự Án",
                 icon: <Description />,
                 path: "/projects",
               },
               {
-                text: "Quản Lý Hợp Đồng",
+                text: "Hợp Đồng",
                 icon: <Assignment />,
                 path: "/contracts",
               },
               {
-                text: "Quản Lý Thanh Toán",
+                text: "Thanh Toán",
                 icon: <MonetizationOn />,
                 path: "/payments",
               },
               {
-                text: "Quản Lý Tài Khoản",
+                text: "Tài Khoản",
+                icon: <People />,
+                path: "/accounts",
+              },
+              {
+                text: "Chủ Đầu Tư",
                 icon: <People />,
                 path: "/accounts",
               },
