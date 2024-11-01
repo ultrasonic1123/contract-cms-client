@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import AppLayout from "./layout/AppLayout";
 import ProjectList from "./pages/Project/ProjectList";
 import ProjectForm from "./pages/Project/ProjectForm";
@@ -10,8 +15,9 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<AppLayout />}>
+          <Route index element={<Navigate to="/projects" replace />} />
           {/*project route */}
-          <Route path="/projects" element={<ProjectList />} />
+          <Route index path="/projects" element={<ProjectList />} />
           <Route path="/projects/create" element={<ProjectForm />} />
           <Route path="/projects/edit/:id" element={<ProjectForm />} />
           {/*contract route */}
