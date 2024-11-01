@@ -7,7 +7,6 @@ import {
   Typography,
   Grid,
   Breadcrumbs,
-  Card,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Link } from "react-router-dom";
@@ -97,6 +96,11 @@ const CreateProject = () => {
               Thêm Phase
             </Button>
           </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6" fontSize={16}>
+              3. Thời gian dự án
+            </Typography>
+          </Grid>
           <Grid item xs={6}>
             <DatePicker
               label="Ngày Bắt Đầu"
@@ -105,6 +109,7 @@ const CreateProject = () => {
               renderInput={(params) => (
                 <TextField size="small" {...params} fullWidth required />
               )}
+              sx={{ width: "100%" }}
             />
           </Grid>
           <Grid item xs={6}>
@@ -115,6 +120,7 @@ const CreateProject = () => {
               renderInput={(params) => (
                 <TextField {...params} fullWidth required />
               )}
+              sx={{ width: "100%" }}
             />
           </Grid>
         </Grid>

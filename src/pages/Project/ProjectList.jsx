@@ -15,7 +15,7 @@ const rows = [
   { id: 3, name: "Dự Án C", status: "Chưa bắt đầu", createdDate: "2024-10-10" },
 ];
 
-const ProjectManagement = () => {
+const ProjectList = () => {
   const navigate = useNavigate();
 
   const handleCreateProject = () => {
@@ -53,4 +53,4 @@ const ProjectManagement = () => {
   );
 };
 
-export default ProjectManagement;
+export default ProjectList;

@@ -1,4 +1,3 @@
-// App.js
 import { useState } from "react";
 import {
   CssBaseline,
@@ -23,13 +22,14 @@ import {
   People,
   BarChart,
 } from "@mui/icons-material";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useLocation } from "react-router-dom"; // Import useLocation
 import LoginForm from "../components/LoginForm";
 
 const drawerWidth = 240;
 
 export default function AppLayout() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Trạng thái đăng nhập
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const location = useLocation(); // Sử dụng useLocation để lấy URL hiện tại
 
   const handleLogin = () => {
     setIsLoggedIn(true);
@@ -81,31 +81,15 @@ export default function AppLayout() {
           <Divider />
           <List>
             {[
-              {
-                text: "Dự Án",
-                icon: <Description />,
-                path: "/projects",
-              },
-              {
-                text: "Hợp Đồng",
-                icon: <Assignment />,
-                path: "/contracts",
-              },
+              { text: "Dự Án", icon: <Description />, path: "/projects" },
+              { text: "Hợp Đồng", icon: <Assignment />, path: "/contracts" },
               {
                 text: "Thanh Toán",
                 icon: <MonetizationOn />,
                 path: "/payments",
               },
-              {
-                text: "Tài Khoản",
-                icon: <People />,
-                path: "/accounts",
-              },
-              {
-                text: "Chủ Đầu Tư",
-                icon: <People />,
-                path: "/accounts",
-              },
+              { text: "Tài Khoản", icon: <People />, path: "/accounts" },
+              { text: "Chủ Đầu Tư", icon: <People />, path: "/accounts" },
               {
                 text: "Báo Cáo Thống Kê",
                 icon: <BarChart />,
@@ -113,13 +97,31 @@ export default function AppLayout() {
               },
             ].map((item) => (
               <ListItem
-                sx={{ color: "inherit" }}
                 button
                 key={item.text}
                 component={Link}
                 to={item.path}
+                sx={{
+                  color:
+                    location.pathname === item.path
+                      ? "primary.main"
+                      : "inherit", // Thay đổi màu cho mục active
+                  backgroundColor:
+                    location.pathname === item.path
+                      ? "action.selected"
+                      : "transparent", // Thay đổi màu nền
+                }}
               >
-                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemIcon
+                  sx={{
+                    color:
+                      location.pathname === item.path
+                        ? "primary.main"
+                        : "inherit",
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
                 <ListItemText
                   primary={item.text}
                   primaryTypographyProps={{ variant: "body2" }}
