@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Typography,
-  Breadcrumbs,
-  IconButton,
-  Visibility,
-} from "@mui/material";
+import { Box, Button, Typography, Breadcrumbs } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
@@ -17,24 +10,7 @@ const columns = [
   { field: "fullname", headerName: "Tên Nhân Viên", width: 200 },
   { field: "username", headerName: "Tên Tài Khoản", width: 200 },
   { field: "role", headerName: "Vai Trò", width: 150 },
-  { field: "status", headerName: "Trạng thái", width: 150 },
-  {
-    field: "actions",
-    headerName: "Hành Động",
-    flex: 1,
-    renderCell: (params) => (
-      <Box>
-        <IconButton
-          component={Link}
-          to={`/contracts/${params.row.id}`}
-          color="primary"
-          aria-label="view"
-        >
-          <Visibility />
-        </IconButton>
-      </Box>
-    ),
-  },
+  { field: "active", headerName: "Trạng thái", width: 150 },
 ];
 
 const AccountList = () => {
@@ -43,9 +19,7 @@ const AccountList = () => {
 
   const getUsers = async () => {
     setLoading(true);
-    const { data } = await axios.get(`${BASE_URL}/user`, {
-      "Content-Type": "application/json",
-    });
+    const { data } = await axios.get(`${BASE_URL}/user`);
     setRows(data.data);
     setLoading(false);
   };
