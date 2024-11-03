@@ -11,35 +11,38 @@ import {
 import { DatePicker } from "@mui/x-date-pickers";
 import { Link } from "react-router-dom";
 import Phase from "./Phase";
+import { Add, Save } from "@mui/icons-material";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(customParseFormat);
 
 const CreateProject = () => {
   const [projectName, setProjectName] = useState("");
   const [investorInfo, setInvestorInfo] = useState("");
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [phases, setPhases] = useState([{ phaseName: "" }]);
+  const [startDate, setStartDate] = useState(dayjs());
+  const [endDate, setEndDate] = useState(dayjs());
+  const [phases, setPhases] = useState([
+    { name: "", description: "", contractId: "" },
+  ]);
 
   const handleAddPhase = () => {
-    setPhases([...phases, { phaseName: "" }]);
+    setPhases([...phases, { name: "", description: "", contractId: "" }]);
   };
 
-  const handlePhaseChange = (index, value) => {
-    const newPhases = [...phases];
-    newPhases[index].phaseName = value;
+  const handlePhaseChange = (newPhases) => {
     setPhases(newPhases);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Logic để lưu dự án
     console.log({
       projectName,
       investorInfo,
-      startDate,
-      endDate,
+      startDate: dayjs(startDate).format("YYYYY-MM-DD"),
+      endDate: dayjs(endDate).format("YYYYY-MM-DD"),
       phases,
     });
-    alert("Dự án đã được tạo!");
   };
 
   return (
@@ -90,10 +93,14 @@ const CreateProject = () => {
               2. Các giai đoạn Dự Án
             </Typography>
             {phases.map((phase, index) => (
-              <Phase key={index} {...{ phase, index, handlePhaseChange }} />
+              <Phase key={index} {...{ phases, index, handlePhaseChange }} />
             ))}
-            <Button variant="contained" onClick={handleAddPhase}>
-              Thêm Phase
+            <Button
+              variant="contained"
+              onClick={handleAddPhase}
+              endIcon={<Add />}
+            >
+              Thêm giai đoạn
             </Button>
           </Grid>
           <Grid item xs={12}>
@@ -129,6 +136,7 @@ const CreateProject = () => {
           variant="contained"
           color="primary"
           sx={{ mt: 2 }}
+          endIcon={<Save />}
         >
           Lưu Dự Án
         </Button>

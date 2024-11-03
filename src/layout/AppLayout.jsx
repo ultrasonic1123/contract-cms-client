@@ -22,21 +22,22 @@ import {
   People,
   BarChart,
 } from "@mui/icons-material";
-import { Outlet, Link, useLocation } from "react-router-dom"; // Import useLocation
-import LoginForm from "../components/LoginForm";
+import { Outlet, Link, useLocation } from "react-router-dom";
+import Login from "../pages/Login";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../store/features/authSlice";
 
 const drawerWidth = 240;
 
 export default function AppLayout() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const location = useLocation(); // Sử dụng useLocation để lấy URL hiện tại
-
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const auth = useSelector((state) => state.auth);
+  const { user } = auth;
+  console.log({ user });
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    dispatch(logout());
   };
 
   return (
@@ -51,12 +52,17 @@ export default function AppLayout() {
           <Typography variant="h6" noWrap component="div">
             Quản Lý Hợp Đồng
           </Typography>
-          {isLoggedIn && (
+          {user?.id && (
             <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography>{user?.fullname}</Typography>
               <IconButton color="inherit">
-                <Avatar alt="User Profile" src="/profile.jpg" />
+                <Avatar alt={user?.fullname} src="/profile.jpg" />
               </IconButton>
-              <Button color="inherit" onClick={handleLogout}>
+              <Button
+                sx={{ bgcolor: "white" }}
+                color="primary"
+                onClick={handleLogout}
+              >
                 Logout
               </Button>
             </Box>
@@ -64,7 +70,7 @@ export default function AppLayout() {
         </Toolbar>
       </AppBar>
       {/* Sidebar */}
-      {isLoggedIn && (
+      {user?.id && (
         <Drawer
           sx={{
             width: drawerWidth,
@@ -142,7 +148,7 @@ export default function AppLayout() {
         }}
       >
         <Toolbar />
-        {isLoggedIn ? <Outlet /> : <LoginForm onLogin={handleLogin} />}
+        {user?.id ? <Outlet /> : <Login />}
       </Box>
     </Box>
   );

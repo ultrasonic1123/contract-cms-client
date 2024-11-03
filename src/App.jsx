@@ -5,17 +5,18 @@ import {
   Navigate,
 } from "react-router-dom";
 import AppLayout from "./layout/AppLayout";
-import ProjectList from "./pages/Project/ProjectList";
-import ProjectForm from "./pages/Project/ProjectForm";
-import ContractForm from "./pages/Contract/ContractForm";
-import ContractList from "./pages/Contract/ContractList";
-import PaymentList from "./pages/Payment/PaymentList";
-import PaymentForm from "./pages/Payment/PaymentForm";
-import AccountList from "./pages/Account/AccountList";
-import AccountForm from "./pages/Account/AccountForm";
-import Report from "./pages/Report";
-import InvestorList from "./pages/Investor/InvestorList";
-import InvestorForm from "./pages/Investor/InvestorForm";
+import ProjectList from "./pages/project/ProjectList";
+import ProjectForm from "./pages/project/ProjectForm";
+import ContractForm from "./pages/contract/ContractForm";
+import ContractList from "./pages/contract/ContractList";
+import PaymentList from "./pages/payment/PaymentList";
+import PaymentForm from "./pages/payment/PaymentForm";
+import AccountList from "./pages/account/AccountList";
+import AccountForm from "./pages/account/AccountForm";
+import Report from "./pages/report";
+import InvestorList from "./pages/investor/InvestorList";
+import InvestorForm from "./pages/investor/InvestorForm";
+import NotFound from "./pages/not_found";
 
 function App() {
   return (
@@ -45,6 +46,8 @@ function App() {
           <Route path="/investors/edit/:id" element={<InvestorForm />} />
           {/*report route*/}
           <Route path="/reports" element={<Report />} />
+          {/* Route 404 */}
+          <Route path="/*" element={<NotFound />} />
         </Route>
       </Routes>
     </Router>
