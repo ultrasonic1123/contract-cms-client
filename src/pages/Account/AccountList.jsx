@@ -1,33 +1,63 @@
-// AccountList.js
-import React from "react";
-import { Box, Button, Typography, Breadcrumbs } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Breadcrumbs,
+  IconButton,
+  Visibility,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../const/api";
+import { useEffect, useState } from "react";
 
 const columns = [
   { field: "id", headerName: "ID", width: 100 },
-  { field: "employeeName", headerName: "Tên Nhân Viên", width: 200 },
+  { field: "fullname", headerName: "Tên Nhân Viên", width: 200 },
   { field: "username", headerName: "Tên Tài Khoản", width: 200 },
   { field: "role", headerName: "Vai Trò", width: 150 },
-];
-
-const rows = [
+  { field: "status", headerName: "Trạng thái", width: 150 },
   {
-    id: 1,
-    employeeName: "Nguyễn Văn A",
-    username: "nva123",
-    role: "Quản trị viên",
+    field: "actions",
+    headerName: "Hành Động",
+    flex: 1,
+    renderCell: (params) => (
+      <Box>
+        <IconButton
+          component={Link}
+          to={`/contracts/${params.row.id}`}
+          color="primary"
+          aria-label="view"
+        >
+          <Visibility />
+        </IconButton>
+      </Box>
+    ),
   },
-  { id: 2, employeeName: "Trần Thị B", username: "ttb456", role: "Nhân viên" },
-  { id: 3, employeeName: "Lê Văn C", username: "lvc789", role: "Nhân viên" },
 ];
 
 const AccountList = () => {
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [rows, setRows] = useState([]);
 
+  const getUsers = async () => {
+    setLoading(true);
+    const { data } = await axios.get(`${BASE_URL}/user`, {
+      "Content-Type": "application/json",
+    });
+    setRows(data.data);
+    setLoading(false);
+  };
+
+  const navigate = useNavigate();
   const handleCreateAccount = () => {
     navigate("/accounts/create");
   };
+
+  useEffect(() => {
+    getUsers();
+  }, []);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -51,11 +81,10 @@ const AccountList = () => {
       </Button>
       <div style={{ height: 400, width: "100%" }}>
         <DataGrid
+          loading={loading}
           rows={rows}
           columns={columns}
           pageSize={5}
-          rowsPerPageOptions={[5]}
-          checkboxSelection
         />
       </div>
     </Box>

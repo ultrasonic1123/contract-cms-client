@@ -10,29 +10,49 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { BASE_URL } from "../../../const/api";
 
 const roles = [
-  { value: "admin", label: "Quản trị viên" },
-  { value: "employee", label: "Nhân viên" },
+  { value: "Super Admin", label: "Quản trị viên" },
+  { value: "employee", label: "Nhân viên kinh doanh" },
+  { value: "director", label: "Ban giám đốc" },
 ];
 
 const AccountForm = () => {
+  const navigate = useNavigate();
   const [employeeName, setEmployeeName] = useState("");
+  const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
-  const navigate = useNavigate();
+  const [role, setRole] = useState("employee");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
-    // Logic xử lý lưu tài khoản mới hoặc cập nhật tài khoản
     console.log({
-      employeeName,
+      fullname: employeeName,
       username,
       password,
       role,
+      email,
     });
-    alert("Tài khoản đã được lưu!");
+    const res = await axios.post(
+      `${BASE_URL}/user`,
+      {
+        fullname: employeeName,
+        username,
+        password,
+        role,
+        email,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    console.log({ res });
+    setLoading(false);
     navigate("/accounts");
   };
 
@@ -59,6 +79,7 @@ const AccountForm = () => {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
+              size="small"
               fullWidth
               label="Tên Nhân Viên"
               variant="outlined"
@@ -69,6 +90,7 @@ const AccountForm = () => {
           </Grid>
           <Grid item xs={12}>
             <TextField
+              size="small"
               fullWidth
               label="Tên Tài Khoản"
               variant="outlined"
@@ -79,6 +101,7 @@ const AccountForm = () => {
           </Grid>
           <Grid item xs={12}>
             <TextField
+              size="small"
               fullWidth
               label="Mật Khẩu"
               type="password"
@@ -90,6 +113,7 @@ const AccountForm = () => {
           </Grid>
           <Grid item xs={12}>
             <TextField
+              size="small"
               select
               fullWidth
               label="Vai Trò"
@@ -105,12 +129,24 @@ const AccountForm = () => {
               ))}
             </TextField>
           </Grid>
+          <Grid item xs={12}>
+            <TextField
+              size="small"
+              fullWidth
+              label="Email"
+              variant="outlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </Grid>
         </Grid>
         <Button
           type="submit"
           variant="contained"
           color="primary"
           sx={{ mt: 2 }}
+          loading={loading}
         >
           Lưu Tài Khoản
         </Button>
