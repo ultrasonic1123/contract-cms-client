@@ -1,9 +1,10 @@
-import { Box, Button, Typography, Breadcrumbs } from "@mui/material";
+import { Box, Button, Typography, Breadcrumbs, Card } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../const/api";
 import { useEffect, useState } from "react";
+import { Add } from "@mui/icons-material";
 
 const columns = [
   { field: "id", headerName: "ID", width: 100 },
@@ -42,25 +43,25 @@ const AccountList = () => {
         <Link to="/">Trang Chủ</Link>
         <Typography color="text.primary">Quản Lý Tài Khoản</Typography>
       </Breadcrumbs>
-      <Typography variant="h4" gutterBottom>
-        Danh Sách Tài Khoản
-      </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleCreateAccount}
-        sx={{ mb: 2 }}
-      >
-        Thêm Tài Khoản
-      </Button>
-      <div style={{ height: 400, width: "100%" }}>
+      <Box sx={{ display: "flex", justifyContent: "end" }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleCreateAccount}
+          sx={{ mb: 2 }}
+          endIcon={<Add />}
+        >
+          Thêm Tài Khoản
+        </Button>
+      </Box>
+      <Card style={{ width: "100%" }}>
         <DataGrid
           loading={loading}
           rows={rows}
           columns={columns}
           pageSize={5}
         />
-      </div>
+      </Card>
     </Box>
   );
 };

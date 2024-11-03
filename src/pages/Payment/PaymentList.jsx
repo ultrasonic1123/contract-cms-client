@@ -1,8 +1,7 @@
-// PaymentList.js
-import React from "react";
-import { Box, Button, Typography, Breadcrumbs } from "@mui/material";
+import { Box, Button, Typography, Breadcrumbs, Card } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link, useNavigate } from "react-router-dom";
+import { Add } from "@mui/icons-material";
 
 const columns = [
   { field: "id", headerName: "ID Thanh Toán", width: 150 },
@@ -64,26 +63,26 @@ const PaymentList = () => {
         <Link to="/">Trang Chủ</Link>
         <Typography color="text.primary">Danh Sách Thanh Toán</Typography>
       </Breadcrumbs>
-      <Typography variant="h4" gutterBottom>
-        Danh Sách Thanh Toán
-      </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleCreatePayment}
-        sx={{ mb: 2 }}
-      >
-        Tạo Thanh Toán Mới
-      </Button>
-      <div style={{ height: 400, width: "100%" }}>
+      <Box sx={{ display: "flex", justifyContent: "end" }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleCreatePayment}
+          sx={{ mb: 2 }}
+          endIcon={<Add />}
+        >
+          Tạo Thanh Toán Mới
+        </Button>
+      </Box>
+      <Card style={{ width: "100%" }}>
         <DataGrid
           rows={rows}
           columns={columns}
           pageSize={5}
           rowsPerPageOptions={[5]}
-          checkboxSelection
+          className="whiteDataGrid"
         />
-      </div>
+      </Card>
     </Box>
   );
 };

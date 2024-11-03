@@ -1,11 +1,17 @@
 import { useState } from "react";
-import { Box, Typography, Button, IconButton } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  IconButton,
+  Card,
+  Breadcrumbs,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Add, Visibility } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
 const ContractList = () => {
-  // Dữ liệu giả hợp đồng
   const [contracts, setContracts] = useState([
     {
       id: 1,
@@ -23,10 +29,8 @@ const ContractList = () => {
       endDate: "2024-04-30",
       progress: "75%",
     },
-    // Thêm dữ liệu khác nếu cần
   ]);
 
-  // Cấu hình các cột của DataGrid
   const columns = [
     { field: "name", headerName: "Tên Hợp Đồng", flex: 2 },
     { field: "serviceName", headerName: "Tên Dịch Vụ", flex: 2 },
@@ -53,29 +57,34 @@ const ContractList = () => {
   ];
 
   return (
-    <Box sx={{ p: 3, maxWidth: "900px", mx: "auto" }}>
-      <Typography variant="h4" gutterBottom>
-        Danh Sách Hợp Đồng
-      </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        startIcon={<Add />}
-        component={Link}
-        to="/contracts/create"
-        sx={{ mb: 2 }}
+    <Box sx={{ p: 3 }}>
+      <Breadcrumbs
+        aria-label="breadcrumb"
+        sx={{ mb: 2, justifyContent: "flex-start", width: "100%" }}
       >
-        Thêm Hợp Đồng
-      </Button>
-      <Box sx={{ height: 400, width: "100%" }}>
+        <Link to="/">Trang Chủ</Link>
+        <Typography color="text.primary">Danh Sách hợp đồng</Typography>
+      </Breadcrumbs>
+      <Box sx={{ display: "flex", justifyContent: "end" }}>
+        <Button
+          variant="contained"
+          color="primary"
+          component={Link}
+          to="/contracts/create"
+          sx={{ mb: 2 }}
+          endIcon={<Add />}
+        >
+          Thêm Hợp Đồng
+        </Button>
+      </Box>
+      <Card style={{ width: "100%" }}>
         <DataGrid
           rows={contracts}
           columns={columns}
           pageSize={5}
           rowsPerPageOptions={[5]}
-          disableSelectionOnClick
         />
-      </Box>
+      </Card>
     </Box>
   );
 };

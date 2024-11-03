@@ -1,6 +1,6 @@
 // Report.js
 import React from "react";
-import { Box, Typography, Breadcrumbs } from "@mui/material";
+import { Box, Typography, Breadcrumbs, Card } from "@mui/material";
 import { Link } from "react-router-dom";
 import {
   PieChart,
@@ -49,16 +49,14 @@ const Report = () => {
         <Link to="/">Trang Chủ</Link>
         <Typography color="text.primary">Báo Cáo Thống Kê</Typography>
       </Breadcrumbs>
-      <Typography variant="h4" gutterBottom>
-        Báo Cáo Thống Kê Dự Án
-      </Typography>
 
-      <Box
+      <Card
         sx={{
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
           mt: 3,
+          p: 3,
         }}
       >
         {/* Biểu đồ tiến độ dự án */}
@@ -117,7 +115,7 @@ const Report = () => {
             <Line type="monotone" dataKey="progress" stroke="#ff7300" />
           </LineChart>
         </Box>
-      </Box>
+      </Card>
     </Box>
   );
 };

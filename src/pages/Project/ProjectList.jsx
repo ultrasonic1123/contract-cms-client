@@ -1,4 +1,4 @@
-import { Box, Button, Typography, Breadcrumbs } from "@mui/material";
+import { Box, Button, Typography, Breadcrumbs, Card } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 
@@ -42,13 +42,15 @@ const ProjectList = () => {
           Tạo Dự Án
         </Button>
       </Box>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-        checkboxSelection
-      />
+      <Card style={{ width: "100%" }}>
+        <DataGrid
+          checkboxSelection
+          rows={rows}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+        />
+      </Card>
     </Box>
   );
 };
