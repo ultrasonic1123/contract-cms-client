@@ -14,6 +14,8 @@ import PaymentForm from "./pages/Payment/PaymentForm";
 import AccountList from "./pages/Account/AccountList";
 import AccountForm from "./pages/Account/AccountForm";
 import Report from "./pages/Report";
+import InvestorList from "./pages/Investor/InvestorList";
+import InvestorForm from "./pages/Investor/InvestorForm";
 
 function App() {
   return (
@@ -37,6 +39,10 @@ function App() {
           <Route path="/accounts" element={<AccountList />} />
           <Route path="/accounts/create" element={<AccountForm />} />
           <Route path="/accounts/edit/:id" element={<AccountForm />} />
+          {/*investors route*/}
+          <Route path="/investors" element={<InvestorList />} />
+          <Route path="/investors/create" element={<InvestorForm />} />
+          <Route path="/investors/edit/:id" element={<InvestorForm />} />
           {/*report route*/}
           <Route path="/reports" element={<Report />} />
         </Route>

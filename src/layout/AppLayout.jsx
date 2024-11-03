@@ -89,7 +89,7 @@ export default function AppLayout() {
                 path: "/payments",
               },
               { text: "Tài Khoản", icon: <People />, path: "/accounts" },
-              { text: "Chủ Đầu Tư", icon: <People />, path: "/accounts" },
+              { text: "Chủ Đầu Tư", icon: <People />, path: "/investors" },
               {
                 text: "Báo Cáo Thống Kê",
                 icon: <BarChart />,
