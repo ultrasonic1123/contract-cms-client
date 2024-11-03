@@ -1,8 +1,10 @@
 // InvestorList.js
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, Typography, Breadcrumbs } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { BASE_URL } from "../../const/api";
 
 const columns = [
   { field: "id", headerName: "ID", width: 100 },
@@ -11,23 +13,23 @@ const columns = [
   { field: "email", headerName: "Email", width: 200 },
 ];
 
-const rows = [
-  {
-    id: 1,
-    name: "Nguyễn Văn A",
-    phone: "0901234567",
-    email: "nva@example.com",
-  },
-  { id: 2, name: "Trần Thị B", phone: "0912345678", email: "ttb@example.com" },
-  { id: 3, name: "Lê Văn C", phone: "0923456789", email: "lvc@example.com" },
-];
-
 const InvestorList = () => {
   const navigate = useNavigate();
 
   const handleCreateInvestor = () => {
     navigate("/investors/create");
   };
+
+  const [rows, setRows] = useState([]);
+
+  const getInvestors = async () => {
+    const { data } = await axios.get(`${BASE_URL}/investor`);
+    setRows(data.data.results);
+  };
+
+  useEffect(() => {
+    getInvestors();
+  }, []);
 
   return (
     <Box sx={{ p: 3 }}>

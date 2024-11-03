@@ -1,5 +1,4 @@
-// InvestorForm.js
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Button,
@@ -9,6 +8,9 @@ import {
   Breadcrumbs,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
+import { Save } from "@mui/icons-material";
+import axios from "axios";
+import { BASE_URL } from "../../../const/api";
 
 const InvestorForm = () => {
   const [name, setName] = useState("");
@@ -17,16 +19,22 @@ const InvestorForm = () => {
   const [address, setAddress] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logic lưu thông tin nhà đầu tư hoặc cập nhật thông tin
     console.log({
       name,
       phone,
       email,
       address,
     });
-    alert("Thông tin nhà đầu tư đã được lưu!");
+
+    const res = await axios.post(`${BASE_URL}/investor`, {
+      name,
+      phone,
+      email,
+      address,
+    });
+    console.log({ res });
     navigate("/investors");
   };
 
@@ -53,6 +61,7 @@ const InvestorForm = () => {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
+              size="small"
               fullWidth
               label="Tên Nhà Đầu Tư"
               variant="outlined"
@@ -63,6 +72,7 @@ const InvestorForm = () => {
           </Grid>
           <Grid item xs={12}>
             <TextField
+              size="small"
               fullWidth
               label="Số Điện Thoại"
               variant="outlined"
@@ -73,6 +83,7 @@ const InvestorForm = () => {
           </Grid>
           <Grid item xs={12}>
             <TextField
+              size="small"
               fullWidth
               label="Email"
               variant="outlined"
@@ -83,6 +94,7 @@ const InvestorForm = () => {
           </Grid>
           <Grid item xs={12}>
             <TextField
+              size="small"
               fullWidth
               label="Địa Chỉ"
               variant="outlined"
@@ -96,6 +108,7 @@ const InvestorForm = () => {
           variant="contained"
           color="primary"
           sx={{ mt: 2 }}
+          endIcon={<Save />}
         >
           Lưu Thông Tin
         </Button>
