@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -9,16 +9,23 @@ import {
   List,
   ListItem,
   ListItemText,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
+import { BASE_URL } from "../../../const/api";
+import axios from "axios";
 
 const ContractCreate = () => {
   const [contractName, setContractName] = useState("");
-  const [serviceName, setServiceName] = useState("");
+  const [selectedService, setSelectedService] = useState("");
+  console.log({ selectedService });
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [allServices, setAllServices] = useState([]);
 
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files);
@@ -31,17 +38,42 @@ const ContractCreate = () => {
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({
-      contractName,
-      serviceName,
-      startDate,
-      endDate,
-      files: uploadedFiles,
-    });
-    alert("Hợp đồng đã được tạo!");
+
+    const formPayload = new FormData();
+    formPayload.append("contractName", contractName);
+    formPayload.append("serviceName", serviceName);
+    formPayload.append("startDate", startDate);
+    formPayload.append("endDate", endDate);
+
+    for (const file of uploadedFiles) {
+      formPayload.append("files", file);
+    }
+
+    try {
+      const response = await fetch(`${BASE_URL}/contract`, {
+        method: "POST",
+        body: formPayload,
+      });
+      const result = await response.json();
+      console.log("Response:", result);
+    } catch (error) {
+      console.error("Error uploading data and files:", error);
+    }
   };
+
+  const getAllServices = async () => {
+    const res = await axios.get(`${BASE_URL}/provided-service`);
+    const { data } = res.data;
+    setAllServices(data);
+  };
+
+  const selectedServiceData = allServices.find((x) => x.id === selectedService);
+
+  useEffect(() => {
+    getAllServices();
+  }, []);
 
   return (
     <Box sx={{ p: 3, maxWidth: "600px", mx: "auto" }}>
@@ -58,16 +90,35 @@ const ContractCreate = () => {
           sx={{ mb: 2 }}
           required
         />
-        <TextField
-          label="Tên Dịch Vụ"
-          variant="outlined"
-          fullWidth
-          value={serviceName}
-          onChange={(e) => setServiceName(e.target.value)}
-          sx={{ mb: 2 }}
-          required
-        />
         <Grid container spacing={2} sx={{ mb: 2 }}>
+          <Grid item xs={12}>
+            <InputLabel id="demo-select-small-label">
+              Tên dịch vụ cung cấp trong hợp đồng
+            </InputLabel>
+            <Select
+              id="demo-select-small"
+              value={selectedService}
+              labelId="demo-select-small-label"
+              onChange={(e) => {
+                setSelectedService(e.target.value);
+              }}
+              sx={{ width: "100%" }}
+            >
+              {allServices.map((item) => (
+                <MenuItem key={item.id} value={item.id}>
+                  {item.name}
+                </MenuItem>
+              ))}
+            </Select>
+            <Typography sx={{ my: 1 }}>
+              Các công việc được cung cấp trong dịch vụ:{" "}
+            </Typography>
+            <List sx={{ height: "250px", overflowY: "scroll" }}>
+              {selectedServiceData?.jobs?.map((item) => (
+                <ListItem key={item.id}>{item.name}</ListItem>
+              ))}
+            </List>
+          </Grid>
           <Grid item xs={6}>
             <DatePicker
               label="Ngày Bắt Đầu"
