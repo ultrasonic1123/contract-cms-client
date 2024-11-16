@@ -51,7 +51,7 @@ const CreateProject = () => {
         p: 3,
         display: "flex",
         flexDirection: "column",
-        alignItems: "start",
+        alignItems: "center",
       }}
     >
       <Breadcrumbs
