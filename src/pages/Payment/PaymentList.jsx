@@ -9,6 +9,8 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import { Link, useNavigate } from "react-router-dom";
 import { Add, Visibility } from "@mui/icons-material";
+import { BASE_URL } from "../../const/api";
+import { useEffect, useState } from "react";
 
 const columns = [
   {
@@ -28,7 +30,7 @@ const columns = [
   {
     field: "amount",
     headerName: "Số Tiền",
-    width: 120,
+    width: 200,
     disableColumnMenu: true,
     sortable: false,
   },
@@ -42,26 +44,19 @@ const columns = [
   {
     field: "paymentDate",
     headerName: "Ngày Thanh Toán",
-    width: 180,
-    disableColumnMenu: true,
-    sortable: false,
-  },
-  {
-    field: "status",
-    headerName: "Trạng Thái",
-    width: 150,
+    width: 200,
     disableColumnMenu: true,
     sortable: false,
   },
   {
     field: "actions",
-    headerName: "Hành Động",
+    headerName: "Chi tiết",
     flex: 1,
     renderCell: (params) => (
       <IconButton
         color="primary"
         component={Link}
-        to={`/payments/${params.row.id}`}
+        to={`/payments/edit/${params.row.id}`}
         aria-label="view"
       >
         <Visibility />
@@ -72,47 +67,37 @@ const columns = [
   },
 ];
 
-const rows = [
-  {
-    id: 1,
-    contractId: "C001",
-    amount: 500000,
-    paymentMethod: "Chuyển khoản",
-    paymentDate: "2024-10-01",
-    status: "Hoàn thành",
-  },
-  {
-    id: 2,
-    contractId: "C002",
-    amount: 750000,
-    paymentMethod: "Thẻ tín dụng",
-    paymentDate: "2024-10-05",
-    status: "Đang xử lý",
-  },
-  {
-    id: 3,
-    contractId: "C003",
-    amount: 300000,
-    paymentMethod: "Tiền mặt",
-    paymentDate: "2024-10-10",
-    status: "Hoàn thành",
-  },
-  {
-    id: 4,
-    contractId: "C004",
-    amount: 450000,
-    paymentMethod: "Chuyển khoản",
-    paymentDate: "2024-10-15",
-    status: "Đã hủy",
-  },
-];
-
 const PaymentList = () => {
   const navigate = useNavigate();
+  const [payments, setPayments] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const getPayments = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${BASE_URL}/payment`);
+      const { data } = await res.json();
+      setPayments(
+        data?.results?.map((item) => ({
+          ...item,
+          contractId: item.contract.id,
+        }))
+      );
+      console.log({ data });
+    } catch (e) {
+      console.log("Error when get payments", e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCreatePayment = () => {
     navigate("/payments/create");
   };
+
+  useEffect(() => {
+    getPayments();
+  }, []);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -136,7 +121,8 @@ const PaymentList = () => {
       </Box>
       <Card style={{ width: "100%" }}>
         <DataGrid
-          rows={rows}
+          loading={loading}
+          rows={payments}
           columns={columns}
           pagination={false}
           disableColumnFilter

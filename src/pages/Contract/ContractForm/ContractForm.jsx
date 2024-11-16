@@ -116,7 +116,6 @@ const ContractCreate = () => {
 
   return (
     <Box sx={{ p: 3, maxWidth: "600px", mx: "auto" }}>
-      {/* Breadcrumbs */}
       <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
         <Link to="/">Trang Chủ</Link>
         <Link to="/contracts">Danh Sách Hợp Đồng</Link>
