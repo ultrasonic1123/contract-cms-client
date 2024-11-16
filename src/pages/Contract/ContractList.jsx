@@ -46,29 +46,35 @@ const ContractList = () => {
       headerName: "Tên Hợp Đồng",
       flex: 2,
       disableColumnMenu: true,
+      sortable: false,
     },
     {
       field: "signingDate",
       headerName: "Ngày Ký",
       flex: 1,
       disableColumnMenu: true,
+      sortable: false,
     },
     {
       field: "serviceProvided",
       headerName: "Dịch Vụ Cung Cấp",
       flex: 2,
       disableColumnMenu: true,
+      sortable: false,
     },
     {
       field: "documentCount",
       headerName: "Số Tài Liệu",
       flex: 1,
       disableColumnMenu: true,
+      sortable: false,
     },
     {
       field: "actions",
-      headerName: "Hành Động",
+      headerName: "Chi tiết",
       flex: 1,
+      disableColumnMenu: true,
+      sortable: false,
       renderCell: (params) => (
         <Box>
           <IconButton
@@ -112,7 +118,7 @@ const ContractList = () => {
           columns={columns}
           pagination={false}
           disableColumnFilter
-          hideFooterPagination={true}
+          hideFooter
         />
       </Card>
     </Box>

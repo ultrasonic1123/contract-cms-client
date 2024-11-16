@@ -7,11 +7,6 @@ import {
   Grid,
   Breadcrumbs,
   MenuItem,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Link } from "react-router-dom";
@@ -21,11 +16,9 @@ const PaymentForm = () => {
   const [paymentAmount, setPaymentAmount] = useState("");
   const [paymentDate, setPaymentDate] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("");
-  const [openCancelDialog, setOpenCancelDialog] = useState(false);
 
   const handlePaymentSubmit = (e) => {
     e.preventDefault();
-    // Logic xử lý thanh toán
     console.log({
       contractId,
       paymentAmount,
@@ -33,13 +26,6 @@ const PaymentForm = () => {
       paymentMethod,
     });
     alert("Thanh toán thành công!");
-  };
-
-  const handleCancelContract = () => {
-    // Logic xử lý hủy hợp đồng
-    console.log("Contract cancelled");
-    setOpenCancelDialog(false);
-    alert("Hợp đồng đã bị hủy");
   };
 
   return (
@@ -121,37 +107,7 @@ const PaymentForm = () => {
         >
           Thanh Toán
         </Button>
-        <Button
-          variant="outlined"
-          color="secondary"
-          sx={{ mt: 2, ml: 2 }}
-          onClick={() => setOpenCancelDialog(true)}
-        >
-          Hủy Hợp Đồng
-        </Button>
       </form>
-
-      {/* Dialog xác nhận hủy hợp đồng */}
-      <Dialog
-        open={openCancelDialog}
-        onClose={() => setOpenCancelDialog(false)}
-      >
-        <DialogTitle>Xác Nhận Hủy Hợp Đồng</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Bạn có chắc chắn muốn hủy hợp đồng này không? Hành động này không
-            thể hoàn tác.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenCancelDialog(false)} color="primary">
-            Hủy
-          </Button>
-          <Button onClick={handleCancelContract} color="secondary" autoFocus>
-            Đồng Ý
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 };

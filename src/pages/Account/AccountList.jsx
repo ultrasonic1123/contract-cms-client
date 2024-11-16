@@ -1,17 +1,77 @@
-import { Box, Button, Typography, Breadcrumbs, Card } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Breadcrumbs,
+  Card,
+  IconButton,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../const/api";
 import { useEffect, useState } from "react";
-import { Add } from "@mui/icons-material";
+import { Add, Visibility } from "@mui/icons-material";
 
 const columns = [
-  { field: "id", headerName: "ID", width: 100 },
-  { field: "fullname", headerName: "Tên Nhân Viên", width: 200 },
-  { field: "username", headerName: "Tên Tài Khoản", width: 200 },
-  { field: "role", headerName: "Vai Trò", width: 150 },
-  { field: "active", headerName: "Trạng thái", width: 150 },
+  {
+    field: "id",
+    headerName: "ID",
+    width: 100,
+    sortable: false,
+    disableColumnMenu: true,
+    disableColumnFilter: true,
+  },
+  {
+    field: "fullname",
+    headerName: "Tên Nhân Viên",
+    width: 200,
+    sortable: false,
+    disableColumnMenu: true,
+    disableColumnFilter: true,
+  },
+  {
+    field: "username",
+    headerName: "Tên Tài Khoản",
+    width: 200,
+    sortable: false,
+    disableColumnMenu: true,
+    disableColumnFilter: true,
+  },
+  {
+    field: "role",
+    headerName: "Vai Trò",
+    width: 150,
+    sortable: false,
+    disableColumnMenu: true,
+    disableColumnFilter: true,
+  },
+  {
+    field: "active",
+    headerName: "Hoạt động",
+    width: 150,
+    sortable: false,
+    disableColumnMenu: true,
+    disableColumnFilter: true,
+  },
+  {
+    field: "actions",
+    headerName: "Chi tiết",
+    flex: 1,
+    renderCell: (params) => (
+      <IconButton
+        color="primary"
+        component={Link}
+        to={`/accounts/${params.row.id}`}
+        aria-label="view"
+      >
+        <Visibility />
+      </IconButton>
+    ),
+    sortable: false,
+    disableColumnMenu: true,
+    disableColumnFilter: true,
+  },
 ];
 
 const AccountList = () => {
@@ -60,6 +120,12 @@ const AccountList = () => {
           rows={rows}
           columns={columns}
           pageSize={5}
+          rowsPerPageOptions={[5]}
+          className="whiteDataGrid"
+          disableColumnMenu
+          disableColumnFilter
+          autoHeight
+          hideFooter
         />
       </Card>
     </Box>

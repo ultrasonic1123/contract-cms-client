@@ -1,16 +1,73 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Typography, Breadcrumbs, Card } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Breadcrumbs,
+  Card,
+  IconButton,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../const/api";
-import { Add } from "@mui/icons-material";
+import { Add, Visibility } from "@mui/icons-material";
 
 const columns = [
-  { field: "id", headerName: "ID", width: 100 },
-  { field: "name", headerName: "Tên Nhà Đầu Tư", width: 200 },
-  { field: "phone", headerName: "Số Điện Thoại", width: 150 },
-  { field: "email", headerName: "Email", width: 200 },
+  {
+    field: "id",
+    headerName: "ID",
+    width: 100,
+    disableColumnMenu: true,
+    sortable: false,
+  },
+  {
+    field: "name",
+    headerName: "Tên Nhà Đầu Tư",
+    width: 200,
+    disableColumnMenu: true,
+    sortable: false,
+  },
+  {
+    field: "phone",
+    headerName: "Số Điện Thoại",
+    width: 150,
+    disableColumnMenu: true,
+    sortable: false,
+  },
+  {
+    field: "email",
+    headerName: "Email",
+    width: 200,
+    disableColumnMenu: true,
+    sortable: false,
+  },
+  {
+    field: "address",
+    headerName: "Địa chỉ",
+    width: 200,
+    disableColumnMenu: true,
+    sortable: false,
+  },
+  {
+    field: "actions",
+    headerName: "Chi tiết",
+    flex: 1,
+    disableColumnMenu: true,
+    sortable: false,
+    renderCell: (params) => (
+      <Box>
+        <IconButton
+          component={Link}
+          to={`/contracts/edit/${params.row.id}`}
+          color="primary"
+          aria-label="view"
+        >
+          <Visibility />
+        </IconButton>
+      </Box>
+    ),
+  },
 ];
 
 const InvestorList = () => {
@@ -52,8 +109,9 @@ const InvestorList = () => {
         <DataGrid
           rows={rows}
           columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
+          pagination={false}
+          disableColumnFilter
+          hideFooter
         />
       </Card>
     </Box>
