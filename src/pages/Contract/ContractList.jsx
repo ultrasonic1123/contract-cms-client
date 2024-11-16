@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -10,33 +10,61 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import { Add, Visibility } from "@mui/icons-material";
 import { Link } from "react-router-dom";
+import { BASE_URL } from "../../const/api";
 
 const ContractList = () => {
-  const [contracts, setContracts] = useState([
-    {
-      id: 1,
-      name: "Hợp Đồng Xây Dựng 1",
-      serviceName: "Dịch Vụ Xây Dựng",
-      startDate: "2023-01-01",
-      endDate: "2023-12-31",
-      progress: "50%",
-    },
-    {
-      id: 2,
-      name: "Hợp Đồng Bảo Trì 2",
-      serviceName: "Dịch Vụ Bảo Trì",
-      startDate: "2023-05-01",
-      endDate: "2024-04-30",
-      progress: "75%",
-    },
-  ]);
+  const [contracts, setContracts] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const getListContract = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${BASE_URL}/contract`);
+      const { data } = await res.json();
+      if (data?.results) {
+        const contracts = data.results.map((item) => ({
+          ...item,
+          serviceProvided: item.service.name,
+          documentCount: item.documents.length,
+        }));
+        setContracts(contracts);
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getListContract();
+  }, []);
 
   const columns = [
-    { field: "name", headerName: "Tên Hợp Đồng", flex: 2 },
-    { field: "serviceName", headerName: "Tên Dịch Vụ", flex: 2 },
-    { field: "startDate", headerName: "Ngày Bắt Đầu", flex: 1 },
-    { field: "endDate", headerName: "Ngày Kết Thúc", flex: 1 },
-    { field: "progress", headerName: "Tiến Độ", flex: 1 },
+    {
+      field: "contractName",
+      headerName: "Tên Hợp Đồng",
+      flex: 2,
+      disableColumnMenu: true,
+    },
+    {
+      field: "signingDate",
+      headerName: "Ngày Ký",
+      flex: 1,
+      disableColumnMenu: true,
+    },
+    {
+      field: "serviceProvided",
+      headerName: "Dịch Vụ Cung Cấp",
+      flex: 2,
+      disableColumnMenu: true,
+    },
+    {
+      field: "documentCount",
+      headerName: "Số Tài Liệu",
+      flex: 1,
+      disableColumnMenu: true,
+    },
     {
       field: "actions",
       headerName: "Hành Động",
@@ -45,7 +73,7 @@ const ContractList = () => {
         <Box>
           <IconButton
             component={Link}
-            to={`/contracts/${params.row.id}`}
+            to={`/contracts/edit/${params.row.id}`}
             color="primary"
             aria-label="view"
           >
@@ -63,7 +91,7 @@ const ContractList = () => {
         sx={{ mb: 2, justifyContent: "flex-start", width: "100%" }}
       >
         <Link to="/">Trang Chủ</Link>
-        <Typography color="text.primary">Danh Sách hợp đồng</Typography>
+        <Typography color="text.primary">Danh Sách Hợp Đồng</Typography>
       </Breadcrumbs>
       <Box sx={{ display: "flex", justifyContent: "end" }}>
         <Button
@@ -79,10 +107,12 @@ const ContractList = () => {
       </Box>
       <Card style={{ width: "100%" }}>
         <DataGrid
+          loading={loading}
           rows={contracts}
           columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
+          pagination={false}
+          disableColumnFilter
+          hideFooterPagination={true}
         />
       </Card>
     </Box>
