@@ -21,6 +21,7 @@ import { BASE_URL } from "../../../const/api";
 import axios from "axios";
 import dayjs from "dayjs";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { FileDownload } from "@mui/icons-material";
 
 const ContractCreate = () => {
   const navigate = useNavigate();
@@ -124,7 +125,7 @@ const ContractCreate = () => {
         </Typography>
       </Box>
     );
-
+  console.log({ uploadedFiles });
   return (
     <Box sx={{ p: 3, maxWidth: "600px", mx: "auto" }}>
       <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
@@ -226,6 +227,14 @@ const ContractCreate = () => {
                   }
                 >
                   <ListItemText primary={file.name} />
+                  {file.downloadUrl && (
+                    <Button
+                      startIcon={<FileDownload />}
+                      href={file.downloadUrl}
+                    >
+                      Download
+                    </Button>
+                  )}
                 </ListItem>
               ))}
             </List>
