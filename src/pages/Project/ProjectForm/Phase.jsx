@@ -1,8 +1,17 @@
 import { DeleteForeverOutlined } from "@mui/icons-material";
-import { TextField, Typography, Box, Button } from "@mui/material";
+import {
+  TextField,
+  Typography,
+  Box,
+  Button,
+  Grid,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import PropTypes from "prop-types";
 
-const Phase = ({ phases, index, handlePhaseChange }) => {
+const Phase = ({ phases, index, handlePhaseChange, contracts = [] }) => {
   const phase = phases[index];
 
   const deletePhase = () => {
@@ -43,20 +52,29 @@ const Phase = ({ phases, index, handlePhaseChange }) => {
         }}
         value={phase.description}
       />
-      <TextField
-        size="small"
-        key={index}
-        fullWidth
-        label={"Định danh hợp đồng"}
-        variant="outlined"
-        value={phase.contractId}
-        onChange={(e) => {
-          const newPhases = [...phases];
-          newPhases[index].contractId = e.target.value;
-          handlePhaseChange(newPhases);
-        }}
-        sx={{ mb: 2, fontSize: "12px" }}
-      />
+      <Grid item xs={12}>
+        <InputLabel id="demo-select-small-label">ID Hợp Đồng</InputLabel>
+        <Select
+          fullWidth
+          size="small"
+          id="demo-select-small"
+          value={phase.contractId}
+          onChange={(e) => {
+            const newPhases = [...phases];
+            newPhases[index].contractId = e.target.value;
+            handlePhaseChange(newPhases);
+          }}
+          labelId="demo-select-small-label"
+          required
+          sx={{ mb: 2 }}
+        >
+          {contracts.map((item) => (
+            <MenuItem key={item.id} value={item.id}>
+              {item.contractName}
+            </MenuItem>
+          ))}
+        </Select>
+      </Grid>
       <Button
         variant="outlined"
         endIcon={<DeleteForeverOutlined />}
@@ -73,6 +91,7 @@ Phase.propTypes = {
   phases: PropTypes.array,
   index: PropTypes.number,
   handlePhaseChange: PropTypes.func,
+  contracts: PropTypes.array,
 };
 
 export default Phase;

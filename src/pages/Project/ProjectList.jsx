@@ -1,26 +1,103 @@
-import { Box, Button, Typography, Breadcrumbs, Card } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Breadcrumbs,
+  Card,
+  Link,
+  IconButton,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { BASE_URL } from "../../const/api";
+import { Add, Visibility } from "@mui/icons-material";
 
 const columns = [
-  { field: "id", headerName: "ID", width: 90 },
-  { field: "name", headerName: "Tên Dự Án", width: 200 },
-  { field: "status", headerName: "Trạng Thái", width: 150 },
-  { field: "createdDate", headerName: "Ngày Tạo", width: 180 },
-];
-
-const rows = [
-  { id: 1, name: "Dự Án A", status: "Đang diễn ra", createdDate: "2024-10-01" },
-  { id: 2, name: "Dự Án B", status: "Hoàn thành", createdDate: "2024-09-15" },
-  { id: 3, name: "Dự Án C", status: "Chưa bắt đầu", createdDate: "2024-10-10" },
+  {
+    field: "id",
+    headerName: "ID",
+    width: 90,
+    disableColumnMenu: true,
+    sortable: false,
+  },
+  {
+    field: "name",
+    headerName: "Tên Dự Án",
+    width: 200,
+    disableColumnMenu: true,
+    sortable: false,
+  },
+  {
+    field: "startDate",
+    headerName: "Ngày bắt đầu",
+    width: 150,
+    disableColumnMenu: true,
+    sortable: false,
+  },
+  {
+    field: "endDate",
+    headerName: "Ngày kết thúc",
+    width: 150,
+    disableColumnMenu: true,
+    sortable: false,
+  },
+  {
+    field: "createdAt",
+    headerName: "Ngày Tạo",
+    width: 180,
+    disableColumnMenu: true,
+    sortable: false,
+  },
+  {
+    field: "viewDetails",
+    headerName: "Xem Chi Tiết",
+    flex: 1,
+    sortable: false,
+    disableColumnMenu: true,
+    renderCell: (params) => (
+      <IconButton
+        color="primary"
+        component={Link}
+        to={`/project/edit/${params.row.id}`}
+        aria-label="view"
+      >
+        <Visibility />
+      </IconButton>
+    ),
+  },
 ];
 
 const ProjectList = () => {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [rows, setRows] = useState([]);
 
   const handleCreateProject = () => {
     navigate("/projects/create");
   };
+
+  const getProjects = async () => {
+    try {
+      setLoading(true);
+      const { data } = await axios.get(`${BASE_URL}/project`);
+      setRows(
+        data.data.results.map((item) => ({
+          ...item,
+          createdAt: new Date(item.createdAt).toLocaleDateString(),
+        }))
+      );
+    } catch (e) {
+      console.log("Error when getting projects", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getProjects();
+  }, []);
 
   return (
     <Box sx={{ p: 3, justifyContent: "start", width: "100%" }}>
@@ -44,11 +121,12 @@ const ProjectList = () => {
       </Box>
       <Card style={{ width: "100%" }}>
         <DataGrid
-          checkboxSelection
           rows={rows}
           columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
+          pagination={false}
+          disableColumnFilter
+          hideFooter
+          loading={loading}
         />
       </Card>
     </Box>
