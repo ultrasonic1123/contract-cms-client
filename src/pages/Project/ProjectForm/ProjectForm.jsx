@@ -12,7 +12,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Phase from "./Phase";
 import { Add, Save } from "@mui/icons-material";
 import dayjs from "dayjs";
@@ -23,6 +23,7 @@ import { BASE_URL } from "../../../const/api";
 dayjs.extend(customParseFormat);
 
 const CreateProject = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const isCreate = Boolean(!id);
   const [loading, setLoading] = useState(false);
@@ -100,7 +101,9 @@ const CreateProject = () => {
           endDate: dayjs(endDate).format(),
           phases,
         });
-        console.log({ res });
+        if (res?.data?.success) {
+          navigate("/projects");
+        }
       } else {
         const res = await axios.put(`${BASE_URL}/project`, {
           id,
@@ -110,7 +113,9 @@ const CreateProject = () => {
           endDate: dayjs(endDate).format(),
           phases,
         });
-        console.log({ res });
+        if (res?.data?.success) {
+          navigate("/projects");
+        }
       }
     } catch (e) {
       console.log("Error when create or update project", e);
