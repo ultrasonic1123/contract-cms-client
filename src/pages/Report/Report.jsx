@@ -1,6 +1,5 @@
-// Report.js
-import React from "react";
 import { Box, Typography, Breadcrumbs, Card } from "@mui/material";
+import axios from "axios";
 import { Link } from "react-router-dom";
 import {
   PieChart,
@@ -12,34 +11,59 @@ import {
   YAxis,
   Tooltip,
   Legend,
-  LineChart,
-  Line,
-  CartesianGrid,
 } from "recharts";
+import { BASE_URL } from "../../const/api";
+import { useEffect, useState } from "react";
 
-const projectData = [
-  { name: "Chưa bắt đầu", value: 5 },
-  { name: "Đang tiến hành", value: 10 },
-  { name: "Hoàn thành", value: 7 },
-];
-
-const paymentData = [
-  { status: "Hoàn thành", count: 15 },
-  { status: "Đang xử lý", count: 5 },
-  { status: "Đã hủy", count: 3 },
-];
-
-const phaseProgressData = [
-  { month: "Tháng 1", progress: 20 },
-  { month: "Tháng 2", progress: 40 },
-  { month: "Tháng 3", progress: 60 },
-  { month: "Tháng 4", progress: 80 },
-  { month: "Tháng 5", progress: 100 },
-];
-
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
+const COLORS = ["#72BF6A", "#C0C5CC"];
 
 const Report = () => {
+  const [contracts, setContracts] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const paidContracts = contracts.filter((item) => item.payment);
+  const unpaidContracts = contracts.filter((item) => !item.payment);
+  const getPayments = async () => {
+    const { data: resData } = await axios.get(`${BASE_URL}/contract`);
+    if (resData.success) {
+      setContracts(resData.data.results);
+    }
+  };
+
+  const getProjects = async () => {
+    const { data: resData } = await axios.get(`${BASE_URL}/project`);
+    if (resData.success) {
+      setProjects(resData.data.results);
+    }
+  };
+
+  const getDoneProjects = () => {
+    return projects.filter((project) =>
+      project.phases.every((phase) =>
+        paidContracts.some((x) => x.id === phase.contract.id)
+      )
+    ).length;
+  };
+
+  const projectData = [
+    {
+      name: "Đã thanh toán",
+      value: paidContracts.length,
+    },
+    {
+      name: "Chưa thanh toán",
+      value: unpaidContracts.length,
+    },
+  ];
+  const paymentData = [
+    { status: "Hoàn thành", count: getDoneProjects() },
+    { status: "Chưa hoàn thành", count: projects.length - getDoneProjects() },
+  ];
+
+  useEffect(() => {
+    getPayments();
+    getProjects();
+  }, []);
+
   return (
     <Box sx={{ p: 3 }}>
       <Breadcrumbs
@@ -49,73 +73,56 @@ const Report = () => {
         <Link to="/">Trang Chủ</Link>
         <Typography color="text.primary">Báo Cáo Thống Kê</Typography>
       </Breadcrumbs>
-
-      <Card
+      <Box
         sx={{
           display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
           mt: 3,
           p: 3,
         }}
       >
-        {/* Biểu đồ tiến độ dự án */}
-        <Box sx={{ width: "30%" }}>
+        <Card sx={{ width: "90%", p: 3 }}>
           <Typography variant="h6" gutterBottom>
-            Tiến Độ Dự Án
+            1. Tổng quan thanh toán
           </Typography>
-          <PieChart width={300} height={300}>
-            <Pie
-              data={projectData}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              label={({ name, percent }) =>
-                `${name} ${(percent * 100).toFixed(0)}%`
-              }
-              outerRadius={100}
-              fill="#8884d8"
-              dataKey="value"
-            >
-              {projectData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-          </PieChart>
-        </Box>
-
-        {/* Biểu đồ trạng thái thanh toán */}
-        <Box sx={{ width: "30%" }}>
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <PieChart width={500} height={300}>
+              <Pie
+                data={projectData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, percent }) =>
+                  `${name} ${(percent * 100).toFixed(0)}%`
+                }
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {projectData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                ))}
+              </Pie>
+            </PieChart>
+          </Box>
+        </Card>
+        <Card sx={{ width: "90%", mt: 3, p: 3 }}>
           <Typography variant="h6" gutterBottom>
-            Trạng Thái Thanh Toán
+            2. Tổng quan dự án
           </Typography>
-          <BarChart width={300} height={300} data={paymentData}>
-            <XAxis dataKey="status" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="count" fill="#82ca9d" />
-          </BarChart>
-        </Box>
-
-        {/* Biểu đồ tiến độ các phase */}
-        <Box sx={{ width: "30%" }}>
-          <Typography variant="h6" gutterBottom>
-            Tiến Độ Các Phase
-          </Typography>
-          <LineChart width={300} height={300} data={phaseProgressData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="progress" stroke="#ff7300" />
-          </LineChart>
-        </Box>
-      </Card>
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <BarChart width={300} height={300} data={paymentData}>
+              <XAxis dataKey="status" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="count" fill="#82ca9d" />
+            </BarChart>
+          </Box>
+        </Card>
+      </Box>
     </Box>
   );
 };
