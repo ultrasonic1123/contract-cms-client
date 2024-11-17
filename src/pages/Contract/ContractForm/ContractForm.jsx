@@ -12,7 +12,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Divider,
   CircularProgress,
   Breadcrumbs,
 } from "@mui/material";
@@ -21,9 +20,10 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { BASE_URL } from "../../../const/api";
 import axios from "axios";
 import dayjs from "dayjs";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 
 const ContractCreate = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const isCreate = Boolean(!id);
   const [contractName, setContractName] = useState("");
@@ -90,6 +90,9 @@ const ContractCreate = () => {
       });
       const result = await response.json();
       console.log("Response:", result);
+      if (result.success) {
+        navigate("/projects");
+      }
     } catch (error) {
       console.error("Error uploading data and files:", error);
     } finally {

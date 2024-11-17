@@ -47,13 +47,6 @@ const CreateProject = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({
-      projectName,
-      investorInfo,
-      startDate: dayjs(startDate).format(),
-      endDate: dayjs(endDate).format(),
-      phases,
-    });
     handleSave();
   };
 
