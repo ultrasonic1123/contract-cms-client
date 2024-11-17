@@ -22,9 +22,10 @@ const ContractList = () => {
       const res = await fetch(`${BASE_URL}/contract`);
       const { data } = await res.json();
       if (data?.results) {
+        console.log({ data });
         const contracts = data.results.map((item) => ({
           ...item,
-          serviceProvided: item.service.name,
+          serviceProvided: item.service?.id,
           documentCount: item.documents.length,
         }));
         setContracts(contracts);
