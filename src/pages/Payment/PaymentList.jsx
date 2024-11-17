@@ -70,7 +70,7 @@ const columns = [
 const PaymentList = () => {
   const navigate = useNavigate();
   const [payments, setPayments] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const getPayments = async () => {
     try {
@@ -129,6 +129,11 @@ const PaymentList = () => {
           hideFooter
         />
       </Card>
+      {payments.length === 0 && !loading && (
+        <Typography variant="h6" color="text.secondary" align="center" my={6}>
+          Không có thanh toán để hiển thị.
+        </Typography>
+      )}
     </Box>
   );
 };

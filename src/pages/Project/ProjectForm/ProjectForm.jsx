@@ -12,7 +12,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Phase from "./Phase";
 import { Add, Save } from "@mui/icons-material";
 import dayjs from "dayjs";
@@ -23,6 +23,8 @@ import { BASE_URL } from "../../../const/api";
 dayjs.extend(customParseFormat);
 
 const CreateProject = () => {
+  const { id } = useParams();
+  const isCreate = Boolean(!id);
   const [loading, setLoading] = useState(false);
   const [investors, setInvestors] = useState([]);
   const [contracts, setContracts] = useState([]);
@@ -90,14 +92,26 @@ const CreateProject = () => {
   const handleSave = async () => {
     try {
       setLoading(true);
-      const res = await axios.post(`${BASE_URL}/project`, {
-        projectName,
-        investorInfo,
-        startDate: dayjs(startDate).format(),
-        endDate: dayjs(endDate).format(),
-        phases,
-      });
-      console.log({ res });
+      if (isCreate) {
+        const res = await axios.post(`${BASE_URL}/project`, {
+          projectName,
+          investorInfo,
+          startDate: dayjs(startDate).format(),
+          endDate: dayjs(endDate).format(),
+          phases,
+        });
+        console.log({ res });
+      } else {
+        const res = await axios.put(`${BASE_URL}/project`, {
+          id,
+          projectName,
+          investorInfo,
+          startDate: dayjs(startDate).format(),
+          endDate: dayjs(endDate).format(),
+          phases,
+        });
+        console.log({ res });
+      }
     } catch (e) {
       console.log("Error when create or update project", e);
     } finally {
@@ -105,7 +119,40 @@ const CreateProject = () => {
     }
   };
 
+  const getDetailProject = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(`${BASE_URL}/project/${id}`, {
+        projectName,
+        investorInfo,
+        startDate: dayjs(startDate).format(),
+        endDate: dayjs(endDate).format(),
+        phases,
+      });
+      if (res.data.success) {
+        const { data } = res.data;
+        setProjectName(data.name);
+        setEndDate(dayjs(data.endDate));
+        setStartDate(dayjs(data.startDate));
+        setInvestorInfo(data.investor.id);
+        setPhases(
+          data.phases.map((phase) => ({
+            ...phase,
+            contractId: phase.contract.id,
+          }))
+        );
+      }
+    } catch (e) {
+      console.log("Error when get detail project", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
+    if (id) {
+      getDetailProject();
+    }
     getInvestors();
     getContracts();
   }, []);
@@ -134,7 +181,9 @@ const CreateProject = () => {
         sx={{ mb: 2, justifyContent: "flex-start", width: "100%" }}
       >
         <Link to="/projects">Quản Lý Dự Án</Link>
-        <Typography color="text.primary">Tạo Dự Án</Typography>
+        <Typography color="text.primary">{`${
+          isCreate ? "Tạo" : "Cập Nhật"
+        } Dự Án`}</Typography>
       </Breadcrumbs>
       <form onSubmit={handleSubmit} style={{ width: "100%", maxWidth: 600 }}>
         <Grid container spacing={2}>

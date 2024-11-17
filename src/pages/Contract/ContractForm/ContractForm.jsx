@@ -128,7 +128,7 @@ const ContractCreate = () => {
         {`${isCreate ? "Tạo" : "Cập nhật"} Hợp Đồng`}
       </Typography>
       <form onSubmit={handleSubmit}>
-        <Typography gutterBottom>1. Thông tin chung hợp đồng</Typography>
+        <Typography mb={4}>1. Thông tin chung hợp đồng</Typography>
         <TextField
           label="Tên Hợp Đồng"
           variant="outlined"

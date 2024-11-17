@@ -14,7 +14,7 @@ import { BASE_URL } from "../../const/api";
 
 const ContractList = () => {
   const [contracts, setContracts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const getListContract = async () => {
     try {
@@ -121,6 +121,11 @@ const ContractList = () => {
           hideFooter
         />
       </Card>
+      {contracts.length === 0 && !loading && (
+        <Typography variant="h6" color="text.secondary" align="center" my={6}>
+          Không có hợp đồng để hiển thị.
+        </Typography>
+      )}
     </Box>
   );
 };

@@ -4,11 +4,10 @@ import {
   Typography,
   Breadcrumbs,
   Card,
-  Link,
   IconButton,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../const/api";
@@ -51,7 +50,7 @@ const columns = [
     sortable: false,
   },
   {
-    field: "viewDetails",
+    field: "actions",
     headerName: "Xem Chi Tiết",
     flex: 1,
     sortable: false,
@@ -60,7 +59,7 @@ const columns = [
       <IconButton
         color="primary"
         component={Link}
-        to={`/project/edit/${params.row.id}`}
+        to={`/projects/edit/${params.row.id}`}
         aria-label="view"
       >
         <Visibility />
@@ -70,7 +69,7 @@ const columns = [
 ];
 
 const ProjectList = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
 
@@ -115,6 +114,7 @@ const ProjectList = () => {
           color="primary"
           onClick={handleCreateProject}
           sx={{ mb: 2 }}
+          endIcon={<Add />}
         >
           Tạo Dự Án
         </Button>
@@ -128,6 +128,11 @@ const ProjectList = () => {
           hideFooter
           loading={loading}
         />
+        {rows.length === 0 && !loading && (
+          <Typography variant="h6" color="text.secondary" align="center" my={6}>
+            Không có dự án nào để hiển thị.
+          </Typography>
+        )}
       </Card>
     </Box>
   );

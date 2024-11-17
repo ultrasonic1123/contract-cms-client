@@ -20,7 +20,6 @@ const columns = [
     width: 100,
     sortable: false,
     disableColumnMenu: true,
-    disableColumnFilter: true,
   },
   {
     field: "fullname",
@@ -28,7 +27,6 @@ const columns = [
     width: 200,
     sortable: false,
     disableColumnMenu: true,
-    disableColumnFilter: true,
   },
   {
     field: "username",
@@ -36,7 +34,6 @@ const columns = [
     width: 200,
     sortable: false,
     disableColumnMenu: true,
-    disableColumnFilter: true,
   },
   {
     field: "role",
@@ -44,7 +41,6 @@ const columns = [
     width: 150,
     sortable: false,
     disableColumnMenu: true,
-    disableColumnFilter: true,
   },
   {
     field: "active",
@@ -52,7 +48,6 @@ const columns = [
     width: 150,
     sortable: false,
     disableColumnMenu: true,
-    disableColumnFilter: true,
   },
   {
     field: "actions",
@@ -70,7 +65,6 @@ const columns = [
     ),
     sortable: false,
     disableColumnMenu: true,
-    disableColumnFilter: true,
   },
 ];
 
@@ -119,12 +113,8 @@ const AccountList = () => {
           loading={loading}
           rows={rows}
           columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
           className="whiteDataGrid"
-          disableColumnMenu
           disableColumnFilter
-          autoHeight
           hideFooter
         />
       </Card>

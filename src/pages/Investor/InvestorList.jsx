@@ -72,16 +72,22 @@ const columns = [
 
 const InvestorList = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [rows, setRows] = useState([]);
 
   const handleCreateInvestor = () => {
     navigate("/investors/create");
   };
 
-  const [rows, setRows] = useState([]);
-
   const getInvestors = async () => {
-    const { data } = await axios.get(`${BASE_URL}/investor`);
-    setRows(data.data.results);
+    try {
+      const { data } = await axios.get(`${BASE_URL}/investor`);
+      setRows(data.data.results);
+    } catch (e) {
+      console.log("Error when get investors", e);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -114,6 +120,11 @@ const InvestorList = () => {
           hideFooter
         />
       </Card>
+      {rows.length === 0 && !loading && (
+        <Typography variant="h6" color="text.secondary" align="center" my={6}>
+          Không có nhà đầu tư để hiển thị.
+        </Typography>
+      )}
     </Box>
   );
 };
