@@ -12,12 +12,13 @@ import {
   InputLabel,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../const/api";
 import axios from "axios";
 import dayjs from "dayjs";
 
 const PaymentForm = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const isCreate = Boolean(!id);
   const [contractId, setContractId] = useState("");
@@ -55,14 +56,48 @@ const PaymentForm = () => {
   const handleSave = async () => {
     try {
       setLoading(true);
-      await axios.post(`${BASE_URL}/payment`, {
-        contractId,
-        paymentAmount,
-        paymentDate: dayjs(paymentDate).format(),
-        paymentMethod,
-      });
+      if (isCreate) {
+        const { data } = await axios.post(`${BASE_URL}/payment`, {
+          contractId,
+          paymentAmount,
+          paymentDate: dayjs(paymentDate).format(),
+          paymentMethod,
+        });
+        console.log("check", data);
+        if (data.success) {
+          navigate("/payments");
+        }
+      } else {
+        const { data } = await axios.put(`${BASE_URL}/payment`, {
+          id,
+          contractId,
+          paymentAmount,
+          paymentDate: dayjs(paymentDate).format(),
+          paymentMethod,
+        });
+        if (data.success) {
+          navigate("/payments");
+        }
+      }
     } catch (e) {
       console.log("Error when place payment", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeletePayment = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${BASE_URL}/payment/${id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success) {
+        navigate("/payments");
+      }
+    } catch (e) {
+      console.log("Error when delete payment", e);
     } finally {
       setLoading(false);
     }
@@ -73,7 +108,6 @@ const PaymentForm = () => {
       setLoading(true);
       const res = await fetch(`${BASE_URL}/payment/${id}`);
       const { data } = await res.json();
-      console.log({ data });
       setContractId(data?.contract?.id);
       setPaymentMethod(data?.paymentMethod);
       setPaymentAmount(data?.amount);
@@ -118,7 +152,8 @@ const PaymentForm = () => {
         aria-label="breadcrumb"
         sx={{ mb: 2, justifyContent: "flex-start", width: "100%" }}
       >
-        <Link to="/contracts">Quản Lý Hợp Đồng</Link>
+        <Link to="/">Trang chủ</Link>
+        <Link to="/payments">Danh Sách Thanh Toán</Link>
         <Typography color="text.primary">Thanh Toán</Typography>
       </Breadcrumbs>
       <Box
@@ -202,14 +237,24 @@ const PaymentForm = () => {
               Thanh Toán
             </Button>
           ) : (
-            <Button
-              type="submit"
-              variant="contained"
-              color="error"
-              sx={{ mt: 2 }}
-            >
-              Bỏ thanh toán
-            </Button>
+            <>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                sx={{ mt: 2, mr: 2 }}
+              >
+                Cập Nhật Thanh Toán
+              </Button>
+              <Button
+                onClick={handleDeletePayment}
+                variant="contained"
+                color="error"
+                sx={{ mt: 2 }}
+              >
+                Xóa thanh toán
+              </Button>
+            </>
           )}
         </form>
       </Box>

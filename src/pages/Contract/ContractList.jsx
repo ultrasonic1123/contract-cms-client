@@ -121,12 +121,12 @@ const ContractList = () => {
           disableColumnFilter
           hideFooter
         />
+        {contracts.length === 0 && !loading && (
+          <Typography variant="h6" color="text.secondary" align="center" my={6}>
+            Không có hợp đồng để hiển thị.
+          </Typography>
+        )}
       </Card>
-      {contracts.length === 0 && !loading && (
-        <Typography variant="h6" color="text.secondary" align="center" my={6}>
-          Không có hợp đồng để hiển thị.
-        </Typography>
-      )}
     </Box>
   );
 };

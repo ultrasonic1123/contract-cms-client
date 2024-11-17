@@ -128,12 +128,12 @@ const PaymentList = () => {
           disableColumnFilter
           hideFooter
         />
+        {payments.length === 0 && !loading && (
+          <Typography variant="h6" color="text.secondary" align="center" my={6}>
+            Không có thanh toán để hiển thị.
+          </Typography>
+        )}
       </Card>
-      {payments.length === 0 && !loading && (
-        <Typography variant="h6" color="text.secondary" align="center" my={6}>
-          Không có thanh toán để hiển thị.
-        </Typography>
-      )}
     </Box>
   );
 };

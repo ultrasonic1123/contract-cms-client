@@ -119,12 +119,12 @@ const InvestorList = () => {
           disableColumnFilter
           hideFooter
         />
+        {rows.length === 0 && !loading && (
+          <Typography variant="h6" color="text.secondary" align="center" my={6}>
+            Không có nhà đầu tư để hiển thị.
+          </Typography>
+        )}
       </Card>
-      {rows.length === 0 && !loading && (
-        <Typography variant="h6" color="text.secondary" align="center" my={6}>
-          Không có nhà đầu tư để hiển thị.
-        </Typography>
-      )}
     </Box>
   );
 };
