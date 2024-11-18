@@ -22,6 +22,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { FileDownload } from "@mui/icons-material";
+import ModalViewPdf from "../ModalViewPdf";
 
 const ContractCreate = () => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const ContractCreate = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [allServices, setAllServices] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [url, setUrl] = useState("");
 
   console.log({ uploadedFiles });
 
@@ -210,7 +212,13 @@ const ContractCreate = () => {
           <Grid item xs={12}>
             <Button variant="contained" component="label" sx={{ mb: 2 }}>
               Chọn Tệp
-              <input type="file" hidden multiple onChange={handleFileUpload} />
+              <input
+                type="file"
+                hidden
+                multiple
+                onChange={handleFileUpload}
+                accept="application/pdf"
+              />
             </Button>
             <List>
               {uploadedFiles.map((file) => (
@@ -226,7 +234,13 @@ const ContractCreate = () => {
                     </IconButton>
                   }
                 >
-                  <ListItemText primary={file.name} />
+                  <ListItemText
+                    primary={file.name}
+                    sx={{ cursor: "pointer" }}
+                    onClick={(e) => {
+                      setUrl(file?.downloadUrl ?? URL.createObjectURL(file));
+                    }}
+                  />
                   {file.downloadUrl && (
                     <Button
                       startIcon={<FileDownload />}
@@ -262,6 +276,13 @@ const ContractCreate = () => {
           Lưu Hợp Đồng
         </Button>
       </form>
+      <ModalViewPdf
+        open={!!url}
+        handleClose={() => {
+          setUrl("");
+        }}
+        url={url}
+      />
     </Box>
   );
 };
