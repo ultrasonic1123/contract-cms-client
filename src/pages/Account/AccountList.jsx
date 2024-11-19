@@ -57,7 +57,7 @@ const columns = [
       <IconButton
         color="primary"
         component={Link}
-        to={`/accounts/${params.row.id}`}
+        to={`/accounts/edit/${params.row.id}`}
         aria-label="view"
       >
         <Visibility />

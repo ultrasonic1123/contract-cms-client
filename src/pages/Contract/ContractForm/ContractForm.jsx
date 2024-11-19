@@ -116,7 +116,7 @@ const ContractCreate = () => {
     if (!isCreate) {
       getContractDetail();
     }
-  }, [isCreate]);
+  }, []);
 
   if (loading)
     return (
@@ -237,7 +237,7 @@ const ContractCreate = () => {
                   <ListItemText
                     primary={file.name}
                     sx={{ cursor: "pointer" }}
-                    onClick={(e) => {
+                    onClick={() => {
                       setUrl(file?.downloadUrl ?? URL.createObjectURL(file));
                     }}
                   />

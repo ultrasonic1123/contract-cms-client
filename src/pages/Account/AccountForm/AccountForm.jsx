@@ -1,5 +1,4 @@
-// AccountForm.js
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -8,8 +7,9 @@ import {
   Grid,
   Breadcrumbs,
   MenuItem,
+  Switch,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../../const/api";
 
@@ -21,24 +21,20 @@ const roles = [
 
 const AccountForm = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const isCreate = Boolean(!id);
   const [employeeName, setEmployeeName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("employee");
+  const [active, setActive] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
-    console.log({
-      fullname: employeeName,
-      username,
-      password,
-      role,
-      email,
-    });
-    const res = await axios.post(
+    await axios.post(
       `${BASE_URL}/user`,
       {
         fullname: employeeName,
@@ -46,15 +42,41 @@ const AccountForm = () => {
         password,
         role,
         email,
+        active,
       },
       {
         headers: { "Content-Type": "application/json" },
       }
     );
-    console.log({ res });
     setLoading(false);
     navigate("/accounts");
   };
+
+  const handleGetUser = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${BASE_URL}/user/${id}`);
+      const { data } = await res.json();
+      if (data) {
+        setActive(data.active);
+        setEmail(data.email);
+        setUsername(data.username);
+        setEmployeeName(data.fullname);
+        setRole(data.role);
+        setPassword(data.password);
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isCreate) {
+      handleGetUser();
+    }
+  }, []);
 
   return (
     <Box
@@ -140,6 +162,19 @@ const AccountForm = () => {
               required
             />
           </Grid>
+          {username !== "admin" && (
+            <Grid item xs={12}>
+              <Box>
+                <Typography>{`${
+                  active ? "Tắt" : "Bật"
+                } trạng thái tài khoản`}</Typography>
+                <Switch
+                  checked={active}
+                  onChange={() => setActive((prev) => !prev)}
+                />
+              </Box>
+            </Grid>
+          )}
         </Grid>
         <Button
           type="submit"

@@ -36,17 +36,14 @@ export default function AppLayout() {
   const location = useLocation();
   const auth = useSelector((state) => state.auth);
   const { user } = auth;
-  console.log({ user });
   const checkAuth = async () => {
     const res = await fetch(`${BASE_URL}/auth`, {
       method: "GET",
       credentials: "include",
     });
     const data = await res.json();
-    console.log({ data });
     if (data.success) {
-      console.log(111);
-      dispatch(setUser(data.data));
+      if (data.data.active) dispatch(setUser(data.data));
     }
   };
 
