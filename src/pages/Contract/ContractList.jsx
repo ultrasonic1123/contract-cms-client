@@ -11,10 +11,14 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Add, Visibility } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { BASE_URL } from "../../const/api";
+import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
+import ModalJobs from "./ModalJobs";
 
 const ContractList = () => {
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [selectedContract, setSelectedContract] = useState(null);
 
   const getListContract = async () => {
     try {
@@ -86,10 +90,27 @@ const ContractList = () => {
           >
             <Visibility />
           </IconButton>
+
+          <IconButton
+            onClick={() => {
+              setIsOpenModal(true);
+              setSelectedContract(params.row);
+            }}
+            color="primary"
+            aria-label="view"
+          >
+            <WorkHistoryIcon />
+          </IconButton>
         </Box>
       ),
     },
   ];
+
+  const handleClose = () => {
+    getListContract();
+    setIsOpenModal(false);
+    setSelectedContract(null);
+  };
 
   return (
     <Box sx={{ p: 3 }}>
@@ -127,6 +148,11 @@ const ContractList = () => {
           </Typography>
         )}
       </Card>
+      <ModalJobs
+        open={isOpenModal}
+        handleClose={handleClose}
+        selected={selectedContract}
+      />
     </Box>
   );
 };

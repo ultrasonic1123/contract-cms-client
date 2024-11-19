@@ -8,7 +8,7 @@ import AppLayout from "./layout/AppLayout";
 import ProjectList from "./pages/project/ProjectList";
 import ProjectForm from "./pages/project/ProjectForm";
 import ContractForm from "./pages/contract/ContractForm";
-import ContractList from "./pages/contract/ContractList";
+import ContractList from "./pages/Contract/ContractList";
 import PaymentList from "./pages/payment/PaymentList";
 import PaymentForm from "./pages/payment/PaymentForm";
 import AccountList from "./pages/account/AccountList";

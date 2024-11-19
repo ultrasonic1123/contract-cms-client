@@ -122,22 +122,19 @@ export default function AppLayout() {
                 component={Link}
                 to={item.path}
                 sx={{
-                  color:
-                    location.pathname === item.path
-                      ? "primary.main"
-                      : "inherit", // Thay đổi màu cho mục active
-                  backgroundColor:
-                    location.pathname === item.path
-                      ? "action.selected"
-                      : "transparent", // Thay đổi màu nền
+                  color: location.pathname.includes(item.path)
+                    ? "primary.main"
+                    : "inherit", // Thay đổi màu cho mục active
+                  backgroundColor: location.pathname.includes(item.path)
+                    ? "action.selected"
+                    : "transparent", // Thay đổi màu nền
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    color:
-                      location.pathname === item.path
-                        ? "primary.main"
-                        : "inherit",
+                    color: location.pathname.includes(item.path)
+                      ? "primary.main"
+                      : "inherit",
                   }}
                 >
                   {item.icon}

@@ -94,7 +94,7 @@ const ContractCreate = () => {
       const result = await response.json();
       console.log("Response:", result);
       if (result.success) {
-        navigate("/projects");
+        navigate("/contracts");
       }
     } catch (error) {
       console.error("Error uploading data and files:", error);
