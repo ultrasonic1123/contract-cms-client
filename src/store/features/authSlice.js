@@ -5,20 +5,24 @@ import { BASE_URL } from "../../const/api";
 export const login = createAsyncThunk(
   "auth/login",
   async ({ username, password }) => {
-    const response = await axios.post(`${BASE_URL}/auth/login`, {
-      username,
-      password,
-    });
+    const response = await axios.post(
+      `${BASE_URL}/auth/login`,
+      {
+        username,
+        password,
+      },
+      {
+        withCredentials: true,
+      }
+    );
 
     const { success, message, data } = response.data;
     console.log({ success, message, data });
 
     if (success) {
-      localStorage.setItem("token", "");
       return { user: data };
     }
 
-    localStorage.setItem("token", "");
     return { error: message };
   }
 );
@@ -31,6 +35,9 @@ const authSlice = createSlice({
     loading: false,
   },
   reducers: {
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
     logout: (state) => {
       state.user = null;
     },
@@ -53,5 +60,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, setUser } = authSlice.actions;
 export default authSlice.reducer;

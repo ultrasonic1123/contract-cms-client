@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CssBaseline,
   Box,
@@ -26,6 +26,8 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 import Login from "../pages/Login";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/features/authSlice";
+import { BASE_URL } from "../const/api";
+import { setUser } from "../store/features/authSlice";
 
 const drawerWidth = 240;
 
@@ -35,15 +37,30 @@ export default function AppLayout() {
   const auth = useSelector((state) => state.auth);
   const { user } = auth;
   console.log({ user });
+  const checkAuth = async () => {
+    const res = await fetch(`${BASE_URL}/auth`, {
+      method: "GET",
+      credentials: "include",
+    });
+    const data = await res.json();
+    console.log({ data });
+    if (data.success) {
+      console.log(111);
+      dispatch(setUser(data.data));
+    }
+  };
 
   const handleLogout = () => {
     dispatch(logout());
   };
 
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      {/* Header */}
       <AppBar
         position="fixed"
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -137,8 +154,6 @@ export default function AppLayout() {
           </List>
         </Drawer>
       )}
-
-      {/* Main Content */}
       <Box
         component="main"
         sx={{
