@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -6,18 +6,22 @@ import {
   Typography,
   Grid,
   Breadcrumbs,
+  CircularProgress,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Save } from "@mui/icons-material";
 import axios from "axios";
 import { BASE_URL } from "../../../const/api";
 
 const InvestorForm = () => {
+  const { id } = useParams();
+  const isCreate = Boolean(!id);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,6 +42,40 @@ const InvestorForm = () => {
     navigate("/investors");
   };
 
+  const handleGetInvestor = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${BASE_URL}/investor/${id}`);
+      const { data } = await res.json();
+      if (data) {
+        setName(data.name);
+        setEmail(data.email);
+        setPhone(data.phone);
+        setAddress(data.address);
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isCreate) {
+      handleGetInvestor();
+    }
+  }, []);
+
+  if (loading)
+    return (
+      <Box sx={{ textAlign: "center" }}>
+        <CircularProgress size={60} />
+        <Typography variant="h6" sx={{ marginTop: 2 }}>
+          Đang tải dữ liệu...
+        </Typography>
+      </Box>
+    );
+
   return (
     <Box
       sx={{
@@ -52,7 +90,9 @@ const InvestorForm = () => {
         sx={{ mb: 2, justifyContent: "flex-start", width: "100%" }}
       >
         <Link to="/investors">Danh Sách Nhà Đầu Tư</Link>
-        <Typography color="text.primary">Thêm Nhà Đầu Tư</Typography>
+        <Typography color="text.primary">{`${
+          isCreate ? "Thêm" : "Cập Nhật"
+        } Nhà Đầu Tư`}</Typography>
       </Breadcrumbs>
       <Typography variant="h4" gutterBottom>
         Thêm Nhà Đầu Tư

@@ -59,7 +59,7 @@ const columns = [
       <Box>
         <IconButton
           component={Link}
-          to={`/contracts/edit/${params.row.id}`}
+          to={`/investors/edit/${params.row.id}`}
           color="primary"
           aria-label="view"
         >

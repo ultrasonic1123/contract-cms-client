@@ -8,6 +8,7 @@ import {
   Breadcrumbs,
   MenuItem,
   Switch,
+  CircularProgress,
 } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
@@ -77,6 +78,16 @@ const AccountForm = () => {
       handleGetUser();
     }
   }, []);
+
+  if (loading)
+    return (
+      <Box sx={{ textAlign: "center" }}>
+        <CircularProgress size={60} />
+        <Typography variant="h6" sx={{ marginTop: 2 }}>
+          Đang tải dữ liệu...
+        </Typography>
+      </Box>
+    );
 
   return (
     <Box
