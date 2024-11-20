@@ -6,6 +6,7 @@ import {
   IconButton,
   Card,
   Breadcrumbs,
+  Input,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Add, Visibility } from "@mui/icons-material";
@@ -14,12 +15,16 @@ import { BASE_URL } from "../../const/api";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import ModalJobs from "./ModalJobs";
 import WorkIcon from "@mui/icons-material/Work";
+import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
+import ModalCancel from "./ModalCancel";
+import { ContractStatus } from "../../const/constant";
 
 const ContractList = () => {
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedContract, setSelectedContract] = useState(null);
+  const [isOpenModalCancel, setIsOpenModalCancel] = useState(false);
 
   const getListContract = async () => {
     try {
@@ -64,7 +69,7 @@ const ContractList = () => {
     {
       field: "serviceProvided",
       headerName: "Dịch Vụ Cung Cấp",
-      flex: 2,
+      flex: 1,
       disableColumnMenu: true,
       sortable: false,
     },
@@ -76,8 +81,22 @@ const ContractList = () => {
       sortable: false,
     },
     {
+      field: "status",
+      headerName: "Trạng thái",
+      flex: 1,
+      disableColumnMenu: true,
+      sortable: false,
+    },
+    {
+      headerName: "Tình trạng",
+      flex: 1,
+      disableColumnMenu: true,
+      sortable: false,
+      valueGetter: (_, row) => {},
+    },
+    {
       field: "actions",
-      headerName: "Chi tiết",
+      headerName: "Hành động",
       flex: 1,
       disableColumnMenu: true,
       sortable: false,
@@ -98,9 +117,26 @@ const ContractList = () => {
               setSelectedContract(params.row);
             }}
             color="primary"
-            aria-label="view"
+            aria-label="jobs"
+            disabled={[ContractStatus.Cancel].includes(params.row.status)}
           >
             <WorkHistoryIcon />
+          </IconButton>
+
+          <IconButton
+            onClick={() => {
+              setSelectedContract(params.row);
+              setIsOpenModalCancel(true);
+            }}
+            color="primary"
+            aria-label="cancel"
+            disabled={[
+              ContractStatus.Cancel,
+              ContractStatus.Done,
+              ContractStatus.PendingCancel,
+            ].includes(params.row.status)}
+          >
+            <DoDisturbOnIcon />
           </IconButton>
         </Box>
       ),
@@ -163,6 +199,16 @@ const ContractList = () => {
         open={isOpenModal}
         handleClose={handleClose}
         selected={selectedContract}
+      />
+
+      <ModalCancel
+        open={isOpenModalCancel}
+        handleClose={() => {
+          setSelectedContract(null);
+          setIsOpenModalCancel(false);
+        }}
+        selected={selectedContract}
+        refresh={getListContract}
       />
     </Box>
   );

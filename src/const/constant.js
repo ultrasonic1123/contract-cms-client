@@ -11,4 +11,5 @@ export const ContractStatus = {
   Doing: "Đang thực hiện",
   Done: "Đã hoàn thành",
   Cancel: "Đã hủy",
+  PendingCancel: "Chờ duyệt hủy",
 };
