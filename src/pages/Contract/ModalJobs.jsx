@@ -16,6 +16,7 @@ import {
 import { confirm, ConfirmProvider } from "material-ui-confirm";
 import { BASE_URL } from "../../const/api";
 import axios from "axios";
+import { JobStatus } from "../../const/constant";
 
 const style = {
   position: "absolute",
@@ -55,7 +56,11 @@ function ModalJobs(props) {
   }, [selected]);
 
   const progress = useMemo(() => {
-    return (jobs.filter((job) => job.status).length / jobs.length) * 100;
+    return (
+      (jobs.filter((job) => job.status === JobStatus.Done).length /
+        jobs.length) *
+      100
+    );
   }, [jobs]);
 
   const handleDoneJob = (item) => {
@@ -69,7 +74,7 @@ function ModalJobs(props) {
       setLoading(true);
       const jobsTemp = jobs.map((job) => ({
         ...job,
-        status: job.status || item.id == job.id,
+        status: item.id == job.id ? JobStatus.Done : job.status,
       }));
 
       try {
@@ -131,14 +136,12 @@ function ModalJobs(props) {
                           {index + 1}
                         </TableCell>
                         <TableCell align="left">{row.name}</TableCell>
-                        <TableCell align="center">
-                          {row.status ? "Đã hoàn thành" : "Đang thực hiện"}
-                        </TableCell>
+                        <TableCell align="center">{row.status}</TableCell>
                         <TableCell align="center">
                           <Button
                             loading={loading}
                             onClick={() => handleDoneJob(row)}
-                            disabled={row.status}
+                            disabled={row.status === JobStatus.Done}
                           >
                             Hoàn Thành
                           </Button>

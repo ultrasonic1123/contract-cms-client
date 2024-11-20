@@ -14,6 +14,8 @@ import {
   MenuItem,
   CircularProgress,
   Breadcrumbs,
+  ListItemButton,
+  Stack,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -23,7 +25,7 @@ import dayjs from "dayjs";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { FileDownload } from "@mui/icons-material";
 import ModalViewPdf from "../ModalViewPdf";
-
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 const ContractCreate = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -36,6 +38,7 @@ const ContractCreate = () => {
   const [allServices, setAllServices] = useState([]);
   const [loading, setLoading] = useState(false);
   const [url, setUrl] = useState("");
+  const [selectedJobs, setSelectedJobs] = useState([]);
 
   console.log({ uploadedFiles });
 
@@ -61,6 +64,11 @@ const ContractCreate = () => {
         setSelectedService(data.service?.id);
         setSigningDate(dayjs(data.signingDate));
         setUploadedFiles(data.documents);
+        setSelectedJobs(
+          data.jobs ??
+            allServices.find((x) => x.id === data.service?.id).jobs ??
+            []
+        );
       }
     } catch (e) {
       console.log(e);
@@ -80,6 +88,14 @@ const ContractCreate = () => {
     formPayload.append("contractNumber", contractNumber);
     formPayload.append("serviceId", selectedService);
     formPayload.append("signingDate", dayjs(signingDate).format());
+
+    console.log({ selectedJobs });
+
+    selectedJobs.forEach((v, index) => {
+      formPayload.append("jobs", JSON.stringify(v));
+    });
+
+    // formPayload.append("jobs", JSON.stringify(selectedJobs));
 
     const nonExistedFiles = uploadedFiles.filter((file) => !file.id);
     for (const file of nonExistedFiles) {
@@ -178,6 +194,9 @@ const ContractCreate = () => {
               labelId="demo-select-small-label"
               onChange={(e) => {
                 setSelectedService(e.target.value);
+                setSelectedJobs(
+                  allServices.find((x) => x.id === e.target.value).jobs
+                );
               }}
               sx={{ width: "100%" }}
             >
@@ -200,7 +219,28 @@ const ContractCreate = () => {
                   }}
                 >
                   {selectedServiceData?.jobs?.map((item) => (
-                    <ListItem key={item.id}>{item.name}</ListItem>
+                    <ListItemButton
+                      key={item.id}
+                      onClick={(v) =>
+                        setSelectedJobs((prev) => {
+                          if (prev.find((v) => v.id === item.id))
+                            return prev.filter((v) => v.id !== item.id);
+                          return [...prev, item];
+                        })
+                      }
+                      selected={selectedJobs?.find((v) => v.id == item.id)}
+                    >
+                      <Stack
+                        width={"100%"}
+                        direction={"row"}
+                        justifyContent={"space-between"}
+                      >
+                        <Typography>{item.name}</Typography>
+                        {selectedJobs?.find((v) => v.id == item.id) && (
+                          <CheckCircleOutlineIcon />
+                        )}
+                      </Stack>
+                    </ListItemButton>
                   ))}
                 </List>
               </>
