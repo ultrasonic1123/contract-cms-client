@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { BASE_URL } from "../../const/api";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import ModalJobs from "./ModalJobs";
+import WorkIcon from "@mui/icons-material/Work";
 
 const ContractList = () => {
   const [contracts, setContracts] = useState([]);
@@ -122,6 +123,16 @@ const ContractList = () => {
         <Typography color="text.primary">Danh Sách Hợp Đồng</Typography>
       </Breadcrumbs>
       <Box sx={{ display: "flex", justifyContent: "end" }}>
+        <Button
+          variant="contained"
+          color="primary"
+          component={Link}
+          to="/contracts/manage-jobs"
+          sx={{ mb: 2, mr: 2 }}
+          endIcon={<WorkIcon />}
+        >
+          Quản lý công việc
+        </Button>
         <Button
           variant="contained"
           color="primary"

@@ -40,7 +40,7 @@ const ContractCreate = () => {
   const [url, setUrl] = useState("");
   const [selectedJobs, setSelectedJobs] = useState([]);
 
-  console.log({ uploadedFiles });
+  console.log({ selectedJobs });
 
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files);
@@ -88,8 +88,6 @@ const ContractCreate = () => {
     formPayload.append("contractNumber", contractNumber);
     formPayload.append("serviceId", selectedService);
     formPayload.append("signingDate", dayjs(signingDate).format());
-
-    console.log({ selectedJobs });
 
     selectedJobs.forEach((v, index) => {
       formPayload.append("jobs", JSON.stringify(v));
@@ -143,7 +141,7 @@ const ContractCreate = () => {
         </Typography>
       </Box>
     );
-  console.log({ uploadedFiles });
+
   return (
     <Box sx={{ p: 3, maxWidth: "600px", mx: "auto" }}>
       <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>

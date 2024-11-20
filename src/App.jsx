@@ -17,6 +17,8 @@ import Report from "./pages/report";
 import InvestorList from "./pages/investor/InvestorList";
 import InvestorForm from "./pages/investor/InvestorForm";
 import NotFound from "./pages/not_found";
+import Overview from "./pages/Contract/OverView";
+import ManageJob from "./pages/Contract/ManageJob";
 
 function App() {
   return (
@@ -46,6 +48,7 @@ function App() {
           <Route path="/investors/edit/:id" element={<InvestorForm />} />
           {/*report route*/}
           <Route path="/reports" element={<Report />} />
+          <Route path="/contracts/manage-jobs" element={<ManageJob />} />
           {/* Route 404 */}
           <Route path="/*" element={<NotFound />} />
         </Route>

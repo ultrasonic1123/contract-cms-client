@@ -57,7 +57,7 @@ function ModalJobs(props) {
 
   const progress = useMemo(() => {
     return (
-      (jobs.filter((job) => job.status === JobStatus.Done).length /
+      (jobs.filter((job) => job.status === JobStatus.Close).length /
         jobs.length) *
       100
     );
@@ -74,7 +74,7 @@ function ModalJobs(props) {
       setLoading(true);
       const jobsTemp = jobs.map((job) => ({
         ...job,
-        status: item.id == job.id ? JobStatus.Done : job.status,
+        status: item.id == job.id ? JobStatus.Close : job.status,
       }));
 
       try {
@@ -141,7 +141,7 @@ function ModalJobs(props) {
                           <Button
                             loading={loading}
                             onClick={() => handleDoneJob(row)}
-                            disabled={row.status === JobStatus.Done}
+                            disabled={row.status === JobStatus.Close}
                           >
                             Hoàn Thành
                           </Button>

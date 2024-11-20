@@ -1,8 +1,8 @@
 export const JobStatus = {
-  Todo: "Khởi tạo",
+  Open: "Khởi tạo",
   InProgress: "Đang thực hiện",
-  InReview: "Kiểm tra",
-  Done: "Hoàn thành",
+  Review: "Kiểm tra",
+  Close: "Hoàn thành",
 };
 
 export const ContractStatus = {

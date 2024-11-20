@@ -1,2 +1,2 @@
-import ContractForm from "./ContractForm";
+import ContractForm from "./ContractForm/";
 export default ContractForm;
