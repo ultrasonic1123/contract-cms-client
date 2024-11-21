@@ -34,7 +34,7 @@ const ContractCreate = () => {
   const [contractNumber, setContractNumber] = useState("");
   const [selectedService, setSelectedService] = useState("");
   const [signingDate, setSigningDate] = useState(null);
-  const [expectedCompleteData, setExpectedCompleteDate] = useState(null);
+  const [expectedCompleteDate, setExpectedCompleteDate] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [allServices, setAllServices] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -311,7 +311,7 @@ const ContractCreate = () => {
           <Grid item xs={12}>
             <DatePicker
               label="Ngày hoàn thành dự kiến"
-              value={expectedCompleteData}
+              value={expectedCompleteDate}
               onChange={(newValue) => setExpectedCompleteDate(newValue)}
               renderInput={(params) => (
                 <TextField {...params} fullWidth required />
