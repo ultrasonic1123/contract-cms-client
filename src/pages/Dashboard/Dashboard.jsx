@@ -72,6 +72,13 @@ const DashboardPage = () => {
     { status: "Chưa hoàn thành", count: projects.length - getDoneProjects() },
   ];
 
+  const serviceData = [
+    { status: "Tư vấn", count: 2 },
+    { status: "Thiết kế", count: 3 },
+    { status: "Thẩm tra", count: 4 },
+    { status: "Lập tài liệu", count: 6 },
+  ];
+
   useEffect(() => {
     getPayments();
     getProjects();
@@ -175,7 +182,7 @@ const DashboardPage = () => {
             <CircularProgress />
           ) : (
             <>
-              <Typography gutterBottom>2. Tổng quan thanh toán</Typography>
+              <Typography gutterBottom>2. Tỷ lệ thanh toán</Typography>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <PieChart width={500} height={300}>
                   <Pie
@@ -215,9 +222,48 @@ const DashboardPage = () => {
             <CircularProgress />
           ) : (
             <>
-              <Typography gutterBottom>3. Tổng quan dự án</Typography>
+              <Typography gutterBottom>3. Tỷ lệ hoàn thành dự án</Typography>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <BarChart width={300} height={300} data={paymentData}>
+                <BarChart width={300} height={250} data={paymentData}>
+                  <XAxis dataKey="status" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="count" fill="#82ca9d" />
+                </BarChart>
+              </Box>
+            </>
+          )}
+        </Card>
+        <Card
+          sx={{
+            width: "90%",
+            mt: 3,
+            p: 2,
+            ...(loading && {
+              display: "flex",
+              justifyContent: "center",
+              py: 6,
+            }),
+          }}
+        >
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <>
+              <Typography gutterBottom>4. Dịch vụ trong hợp đồng</Typography>
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
+                <BarChart
+                  width={500}
+                  height={250}
+                  data={serviceData}
+                  margin={{
+                    top: 20,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                  }}
+                >
                   <XAxis dataKey="status" />
                   <YAxis />
                   <Tooltip />
