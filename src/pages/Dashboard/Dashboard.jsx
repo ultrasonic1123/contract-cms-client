@@ -251,7 +251,9 @@ const DashboardPage = () => {
             <CircularProgress />
           ) : (
             <>
-              <Typography gutterBottom>4. Dịch vụ trong hợp đồng</Typography>
+              <Typography gutterBottom>
+                4. Dịch vụ sử dụng trong hợp đồng
+              </Typography>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <BarChart
                   width={500}
