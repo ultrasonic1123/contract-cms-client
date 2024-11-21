@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   CssBaseline,
   Box,
@@ -17,10 +17,11 @@ import {
 } from "@mui/material";
 import {
   Assignment,
-  Description,
   MonetizationOn,
   People,
-  BarChart,
+  Dashboard,
+  ManageAccounts,
+  DisplaySettings,
 } from "@mui/icons-material";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import Login from "../pages/Login";
@@ -28,6 +29,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/features/authSlice";
 import { BASE_URL } from "../const/api";
 import { setUser } from "../store/features/authSlice";
+import axios from "axios";
 
 const drawerWidth = 240;
 
@@ -47,7 +49,10 @@ export default function AppLayout() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await axios.get(`${BASE_URL}/auth/logout`, {
+      withCredentials: true,
+    });
     dispatch(logout());
   };
 
@@ -101,19 +106,26 @@ export default function AppLayout() {
           <Divider />
           <List>
             {[
-              { text: "Dự Án", icon: <Description />, path: "/projects" },
+              { text: "Tổng quan", icon: <Dashboard />, path: "/dashboard" },
+              { text: "Dự Án", icon: <DisplaySettings />, path: "/projects" },
               { text: "Hợp Đồng", icon: <Assignment />, path: "/contracts" },
               {
                 text: "Thanh Toán",
                 icon: <MonetizationOn />,
                 path: "/payments",
               },
-              { text: "Tài Khoản", icon: <People />, path: "/accounts" },
+              {
+                text: "Tài Khoản",
+                icon: <ManageAccounts />,
+                path: "/accounts",
+              },
               { text: "Chủ Đầu Tư", icon: <People />, path: "/investors" },
               {
+                /* {
                 text: "Báo Cáo Thống Kê",
                 icon: <BarChart />,
                 path: "/reports",
+              }, */
               },
             ].map((item) => (
               <ListItem

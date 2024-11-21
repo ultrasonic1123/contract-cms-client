@@ -26,8 +26,11 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { FileDownload } from "@mui/icons-material";
 import ModalViewPdf from "../ModalViewPdf";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import { useSelector } from "react-redux";
+
 const ContractCreate = () => {
   const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.user);
   const { id } = useParams();
   const isCreate = Boolean(!id);
   const [contractName, setContractName] = useState("");
@@ -70,6 +73,11 @@ const ContractCreate = () => {
             allServices.find((x) => x.id === data.service?.id).jobs ??
             []
         );
+        setExpectedCompleteDate(
+          data.expected_complete_date
+            ? dayjs(data.expected_complete_date)
+            : null
+        );
       }
     } catch (e) {
       console.log(e);
@@ -83,12 +91,17 @@ const ContractCreate = () => {
     e.preventDefault();
 
     const formPayload = new FormData();
-    console.log({ id });
+
+    isCreate & formPayload.append("userId", user.id);
     id && formPayload.append("id", id);
     formPayload.append("contractName", contractName);
     formPayload.append("contractNumber", contractNumber);
     formPayload.append("serviceId", selectedService);
     formPayload.append("signingDate", dayjs(signingDate).format());
+    formPayload.append(
+      "expectedCompleteDate",
+      dayjs(expectedCompleteDate).format()
+    );
 
     selectedJobs.forEach((v, index) => {
       formPayload.append("jobs", JSON.stringify(v));

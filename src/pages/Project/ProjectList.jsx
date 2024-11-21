@@ -106,6 +106,7 @@ const ProjectList = () => {
           mb: 2,
         }}
       >
+        <Link to="/">Trang chủ</Link>
         <Typography color="text.primary">Quản Lý Dự Án</Typography>
       </Breadcrumbs>
       <Box sx={{ display: "flex", justifyContent: "end" }}>

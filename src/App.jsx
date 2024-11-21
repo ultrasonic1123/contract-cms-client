@@ -17,15 +17,17 @@ import Report from "./pages/report";
 import InvestorList from "./pages/investor/InvestorList";
 import InvestorForm from "./pages/investor/InvestorForm";
 import NotFound from "./pages/not_found";
-import Overview from "./pages/Contract/OverView";
+// import Overview from "./pages/Contract/OverView";
 import ManageJob from "./pages/Contract/ManageJob";
+import DashboardPage from "./pages/dashboard";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<AppLayout />}>
-          <Route index element={<Navigate to="/projects" replace />} />
+          <Route index element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
           {/*projects route */}
           <Route path="/projects" element={<ProjectList />} />
           <Route path="/projects/create" element={<ProjectForm />} />
