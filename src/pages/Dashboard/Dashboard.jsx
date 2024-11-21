@@ -33,7 +33,7 @@ const DashboardPage = () => {
   const unpaidContracts = contracts.filter((item) => !item.payment);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndSate] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const getPayments = async () => {
     const { data: resData } = await axios.get(`${BASE_URL}/contract`);
@@ -147,17 +147,17 @@ const DashboardPage = () => {
           {loading ? (
             <CircularProgress />
           ) : (
-            <>
-              <Typography gutterBotom>1. Tóm tắt thông tin</Typography>
+            <Box>
+              <Typography mb={2}>1. Tóm tắt thông tin</Typography>
               <Stack direction="row" gap="15px">
                 <Box sx={{ border: "1px solid grey", p: 3, borderRadius: 3 }}>
-                  Tổng số hợp đồng
+                  Tổng số hợp đồng: 15
                 </Box>
                 <Box sx={{ border: "1px solid grey", p: 3, borderRadius: 3 }}>
-                  Tổng số hợp đồng
+                  Tổng giá trị hợp đồng: 1.570.000.000đ
                 </Box>
               </Stack>
-            </>
+            </Box>
           )}
         </Card>
         <Card
