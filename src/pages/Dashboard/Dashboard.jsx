@@ -7,6 +7,8 @@ import {
   TextField,
   Grid,
   CircularProgress,
+  IconButton,
+  Button,
 } from "@mui/material";
 import axios from "axios";
 import {
@@ -23,6 +25,7 @@ import {
 import { BASE_URL } from "../../const/api";
 import { useEffect, useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers";
+import { FileDownloadOutlined } from "@mui/icons-material";
 
 const COLORS = ["#72BF6A", "#C0C5CC"];
 
@@ -155,7 +158,12 @@ const DashboardPage = () => {
             <CircularProgress />
           ) : (
             <Box>
-              <Typography mb={2}>1. Tóm tắt thông tin</Typography>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Typography mb={2}>1. Tóm tắt thông tin</Typography>
+                <Button variant="outlined" startIcon={<FileDownloadOutlined />}>
+                  Xuất báo cáo
+                </Button>
+              </Box>
               <Stack direction="row" gap="15px">
                 <Box sx={{ border: "1px solid grey", p: 3, borderRadius: 3 }}>
                   Tổng số hợp đồng: 15
@@ -182,7 +190,12 @@ const DashboardPage = () => {
             <CircularProgress />
           ) : (
             <>
-              <Typography gutterBottom>2. Tỷ lệ thanh toán</Typography>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Typography gutterBottom>2. Tỷ lệ thanh toán</Typography>
+                <Button variant="outlined" startIcon={<FileDownloadOutlined />}>
+                  Xuất báo cáo
+                </Button>
+              </Box>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <PieChart width={500} height={300}>
                   <Pie
@@ -222,7 +235,12 @@ const DashboardPage = () => {
             <CircularProgress />
           ) : (
             <>
-              <Typography gutterBottom>3. Tỷ lệ hoàn thành dự án</Typography>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Typography gutterBottom>3. Tỷ lệ hoàn thành dự án</Typography>
+                <Button variant="outlined" startIcon={<FileDownloadOutlined />}>
+                  Xuất báo cáo
+                </Button>
+              </Box>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <BarChart width={300} height={250} data={paymentData}>
                   <XAxis dataKey="status" />
@@ -251,9 +269,14 @@ const DashboardPage = () => {
             <CircularProgress />
           ) : (
             <>
-              <Typography gutterBottom>
-                4. Dịch vụ sử dụng trong hợp đồng
-              </Typography>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Typography gutterBottom>
+                  4. Dịch vụ sử dụng trong hợp đồng
+                </Typography>
+                <Button variant="outlined" startIcon={<FileDownloadOutlined />}>
+                  Xuất báo cáo
+                </Button>
+              </Box>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <BarChart
                   width={500}
