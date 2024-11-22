@@ -13,3 +13,9 @@ export const ContractStatus = {
   Cancel: "Đã hủy",
   PendingCancel: "Chờ duyệt hủy",
 };
+
+export const BillStatus = {
+  Pending: "Chờ thanh toán",
+  Done: "Đã thanh toán",
+  Cancel: "Đã hủy",
+};

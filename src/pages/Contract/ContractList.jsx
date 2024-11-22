@@ -60,8 +60,23 @@ const ContractList = () => {
       sortable: false,
     },
     {
+      field: "amount",
+      headerName: "Giá trị hợp đồng",
+      flex: 1,
+      disableColumnMenu: true,
+      sortable: false,
+      valueGetter: (value) => value.toLocaleString() + " vnd",
+    },
+    {
       field: "signingDate",
       headerName: "Ngày Ký",
+      flex: 1,
+      disableColumnMenu: true,
+      sortable: false,
+    },
+    {
+      field: "expectedCompleteDate",
+      headerName: "Ngày Hoàn thành dự kiến",
       flex: 1,
       disableColumnMenu: true,
       sortable: false,

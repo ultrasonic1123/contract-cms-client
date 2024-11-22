@@ -197,7 +197,16 @@ const PaymentForm = () => {
                 variant="outlined"
                 type="number"
                 value={paymentAmount}
-                onChange={(e) => setPaymentAmount(e.target.value)}
+                onChange={(e) => {
+                  const amount = Number(
+                    contracts.find((contract) => contract.id == contractId)
+                      .remaining
+                  );
+
+                  const value = Number(e.target.value);
+                  if (value > amount) return setPaymentAmount(amount);
+                  setPaymentAmount(e.target.value);
+                }}
                 required
               />
             </Grid>

@@ -40,6 +40,7 @@ const ContractCreate = () => {
   const [expectedCompleteDate, setExpectedCompleteDate] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [allServices, setAllServices] = useState([]);
+  const [amount, setAmount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [url, setUrl] = useState("");
   const [selectedJobs, setSelectedJobs] = useState([]);
@@ -78,6 +79,7 @@ const ContractCreate = () => {
             ? dayjs(data.expected_complete_date)
             : null
         );
+        setAmount(data.amount);
       }
     } catch (e) {
       console.log(e);
@@ -98,6 +100,7 @@ const ContractCreate = () => {
     formPayload.append("contractNumber", contractNumber);
     formPayload.append("serviceId", selectedService);
     formPayload.append("signingDate", dayjs(signingDate).format());
+    formPayload.append("amount", Number(amount));
     formPayload.append(
       "expectedCompleteDate",
       dayjs(expectedCompleteDate).format()
@@ -189,6 +192,21 @@ const ContractCreate = () => {
             fullWidth
             value={contractNumber}
             onChange={(e) => setContractNumber(e.target.value)}
+            sx={{ mb: 2 }}
+            required
+          />
+
+          <TextField
+            size="small"
+            label="Giá trị hợp đồng"
+            variant="outlined"
+            type="number"
+            fullWidth
+            value={amount}
+            onChange={(e) => {
+              const value = e.target.value;
+              setAmount(value);
+            }}
             sx={{ mb: 2 }}
             required
           />
