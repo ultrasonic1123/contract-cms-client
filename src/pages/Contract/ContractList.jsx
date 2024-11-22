@@ -65,7 +65,7 @@ const ContractList = () => {
       flex: 1,
       disableColumnMenu: true,
       sortable: false,
-      valueGetter: (value) => value.toLocaleString() + " vnd",
+      valueGetter: (value) => value?.toLocaleString() + " vnd",
     },
     {
       field: "signingDate",

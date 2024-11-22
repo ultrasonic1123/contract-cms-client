@@ -26,6 +26,7 @@ import { BASE_URL } from "../../const/api";
 import { useEffect, useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers";
 import { FileDownloadOutlined } from "@mui/icons-material";
+import formatMoney from "../../helpers/formatMoney";
 
 const COLORS = ["#72BF6A", "#C0C5CC"];
 
@@ -37,6 +38,11 @@ const DashboardPage = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndSate] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const getTotalContractsAmount = () => {
+    const total = contracts.reduce((acc, curr) => acc + curr.amount, 0);
+    return formatMoney(total);
+  };
 
   const getPayments = async () => {
     const { data: resData } = await axios.get(`${BASE_URL}/contract`);
@@ -158,18 +164,55 @@ const DashboardPage = () => {
             <CircularProgress />
           ) : (
             <Box>
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+              >
                 <Typography mb={2}>1. Tóm tắt thông tin</Typography>
                 <Button variant="outlined" startIcon={<FileDownloadOutlined />}>
                   Xuất báo cáo
                 </Button>
               </Box>
               <Stack direction="row" gap="15px">
-                <Box sx={{ border: "1px solid grey", p: 3, borderRadius: 3 }}>
-                  Tổng số hợp đồng: 15
+                <Box
+                  sx={{
+                    border: "1px solid grey",
+                    p: 2,
+                    borderRadius: 3,
+                    bgcolor: "#e3e3e3",
+                  }}
+                >
+                  <Typography>
+                    Tổng số hợp đồng:{" "}
+                    <Typography align="center" color="info">
+                      {contracts.length}
+                    </Typography>
+                  </Typography>
                 </Box>
-                <Box sx={{ border: "1px solid grey", p: 3, borderRadius: 3 }}>
-                  Tổng giá trị hợp đồng: 1.570.000.000đ
+                <Box
+                  sx={{
+                    border: "1px solid grey",
+                    p: 2,
+                    borderRadius: 3,
+                    bgcolor: "#e3e3e3",
+                  }}
+                >
+                  Tổng giá trị hợp đồng:{" "}
+                  <Typography align="center" color="info">
+                    {getTotalContractsAmount()}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    border: "1px solid grey",
+                    p: 2,
+                    borderRadius: 3,
+                    bgcolor: "#e3e3e3",
+                  }}
+                >
+                  Tổng số dự án:{" "}
+                  <Typography align="center" color="info">
+                    {projects.length}
+                  </Typography>
                 </Box>
               </Stack>
             </Box>
