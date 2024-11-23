@@ -212,16 +212,14 @@ const PaymentList = () => {
           </Typography>
         )}
       </Card>
-      <ConfirmProvider>
-        <ModalQR
-          open={isOpenModal}
-          handleClose={() => {
-            setPayment(undefined);
-            setIsOpenModal(false);
-          }}
-          value={payment?.id}
-        />
-      </ConfirmProvider>
+      <ModalQR
+        open={isOpenModal}
+        handleClose={() => {
+          setPayment(undefined);
+          setIsOpenModal(false);
+        }}
+        value={payment?.id}
+      />
     </Box>
   );
 };

@@ -99,71 +99,69 @@ function ModalJobs(props) {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <ConfirmProvider>
-        <Box sx={style}>
-          <Typography fontWeight={500}>
-            Hợp đồng: {selected?.contractName}
-          </Typography>
-          <Box sx={{ padding: "30px 0" }}>
-            <Box sx={{ paddingBlockEnd: 2 }}>
-              <Typography>Tiến trình hợp đồng</Typography>
-              <LinearProgressWithLabel value={progress} />
-            </Box>
-            <Box sx={{ maxHeight: 600, overflowY: "auto" }}>
-              <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell width={100}>STT</TableCell>
-                      <TableCell align="center">Tên công việc</TableCell>
-                      <TableCell width={200} align="center">
-                        Trạng Thái
+      <Box sx={style}>
+        <Typography fontWeight={500}>
+          Hợp đồng: {selected?.contractName}
+        </Typography>
+        <Box sx={{ padding: "30px 0" }}>
+          <Box sx={{ paddingBlockEnd: 2 }}>
+            <Typography>Tiến trình hợp đồng</Typography>
+            <LinearProgressWithLabel value={progress} />
+          </Box>
+          <Box sx={{ maxHeight: 600, overflowY: "auto" }}>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell width={100}>STT</TableCell>
+                    <TableCell align="center">Tên công việc</TableCell>
+                    <TableCell width={200} align="center">
+                      Trạng Thái
+                    </TableCell>
+                    <TableCell width={200} align="center">
+                      Hành động
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {jobs?.map((row, index) => (
+                    <TableRow
+                      key={row.name}
+                      sx={{
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {index + 1}
                       </TableCell>
-                      <TableCell width={200} align="center">
-                        Hành động
+                      <TableCell align="left">{row.name}</TableCell>
+                      <TableCell align="center">{row.status}</TableCell>
+                      <TableCell align="center">
+                        <Button
+                          loading={loading}
+                          onClick={() => handleDoneJob(row)}
+                          disabled={row.status === JobStatus.Close}
+                        >
+                          Hoàn Thành
+                        </Button>
                       </TableCell>
                     </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {jobs?.map((row, index) => (
-                      <TableRow
-                        key={row.name}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {index + 1}
-                        </TableCell>
-                        <TableCell align="left">{row.name}</TableCell>
-                        <TableCell align="center">{row.status}</TableCell>
-                        <TableCell align="center">
-                          <Button
-                            loading={loading}
-                            onClick={() => handleDoneJob(row)}
-                            disabled={row.status === JobStatus.Close}
-                          >
-                            Hoàn Thành
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              position: "fixed",
-              bottom: 10,
-              right: 20,
-            }}
-          >
-            <Button onClick={handleClose}>Close</Button>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Box>
         </Box>
-      </ConfirmProvider>
+        <Box
+          sx={{
+            position: "fixed",
+            bottom: 10,
+            right: 20,
+          }}
+        >
+          <Button onClick={handleClose}>Close</Button>
+        </Box>
+      </Box>
     </Modal>
   );
 }

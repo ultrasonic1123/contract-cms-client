@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { BASE_URL } from "../../const/api";
+import { useSelector } from "react-redux";
 
 export const login = createAsyncThunk(
   "auth/login",
@@ -59,6 +60,10 @@ const authSlice = createSlice({
       });
   },
 });
+
+export const useGetUserStore = () => {
+  return useSelector((state) => state.auth?.user);
+};
 
 export const { logout, setUser } = authSlice.actions;
 export default authSlice.reducer;
