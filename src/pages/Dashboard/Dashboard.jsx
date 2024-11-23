@@ -79,7 +79,6 @@ const DashboardPage = () => {
           responseType: "blob",
         }
       );
-      console.log({ response });
       const blob = response.data;
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
@@ -441,9 +440,6 @@ const DashboardPage = () => {
             <>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography gutterBottom>4. Phân loại theo dịch vụ</Typography>
-                <Button variant="outlined" startIcon={<FileDownloadOutlined />}>
-                  Xuất báo cáo
-                </Button>
               </Box>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <BarChart

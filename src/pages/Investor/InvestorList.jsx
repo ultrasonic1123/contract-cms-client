@@ -11,7 +11,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../const/api";
-import { Add, Visibility } from "@mui/icons-material";
+import { Add, FileDownloadOutlined, Visibility } from "@mui/icons-material";
 
 const columns = [
   {
@@ -74,6 +74,7 @@ const InvestorList = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState([]);
+  const [isDownLoad, setIsDownLoad] = useState(false);
 
   const handleCreateInvestor = () => {
     navigate("/investors/create");
@@ -90,6 +91,29 @@ const InvestorList = () => {
     }
   };
 
+  const downloadContractXLXS = async () => {
+    try {
+      setIsDownLoad(true);
+      const response = await axios.get(
+        `${BASE_URL}/report/contract/download-investor`,
+        {
+          responseType: "blob",
+        }
+      );
+      const blob = response.data;
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "bao_cao_doanh_thu.xlsx";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (e) {
+      console.log("Error", e);
+    } finally {
+      setIsDownLoad(false);
+    }
+  };
+
   useEffect(() => {
     getInvestors();
   }, []);
@@ -101,6 +125,16 @@ const InvestorList = () => {
         <Typography color="text.primary">Danh Sách Nhà Đầu Tư</Typography>
       </Breadcrumbs>
       <Box sx={{ display: "flex", justifyContent: "end" }}>
+        <Button
+          disabled={isDownLoad}
+          loading={isDownLoad}
+          variant="outlined"
+          endIcon={<FileDownloadOutlined />}
+          sx={{ mb: 2, mr: 2 }}
+          onClick={downloadContractXLXS}
+        >
+          Xuất báo cáo
+        </Button>
         <Button
           variant="contained"
           color="primary"
