@@ -19,6 +19,10 @@ import {
   YAxis,
   Tooltip,
   Legend,
+  ResponsiveContainer,
+  LineChart,
+  CartesianGrid,
+  Line,
 } from "recharts";
 import { BASE_URL } from "../../const/api";
 import { useEffect, useState } from "react";
@@ -38,9 +42,8 @@ const COLORS = [
 
 const DashboardPage = () => {
   const [contracts, setContracts] = useState([]);
+  const [contractsByYear, setContractsByYear] = useState([]);
   const [projects, setProjects] = useState([]);
-  const paidContracts = contracts.filter((item) => item.payment);
-  const unpaidContracts = contracts.filter((item) => !item.payment);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndSate] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -48,6 +51,15 @@ const DashboardPage = () => {
   const getTotalContractsAmount = () => {
     const total = contracts.reduce((acc, curr) => acc + curr.amount, 0);
     return formatMoney(total);
+  };
+
+  const getAllContracts = async () => {
+    const { data } = await axios.get(`${BASE_URL}/report/contract/year`);
+    if (data.data) {
+      setContractsByYear(data.data);
+    } else {
+      setContractsByYear([]);
+    }
   };
 
   const getContractReport = async () => {
@@ -116,7 +128,26 @@ const DashboardPage = () => {
     ].filter((x) => x.value);
   };
 
-  console.log("check", getPaymentReportData());
+  const getContractReportByYear = async () => {
+    // return
+  };
+
+  console.log({ contractsByYear });
+
+  const data = [
+    { month: "Jan", value: 400 },
+    { month: "Feb", value: 300 },
+    { month: "Mar", value: 500 },
+    { month: "Apr", value: 700 },
+    { month: "May", value: 200 },
+    { month: "Jun", value: 600 },
+    { month: "Jul", value: 800 },
+    { month: "Aug", value: 900 },
+    { month: "Sep", value: 400 },
+    { month: "Oct", value: 300 },
+    { month: "Nov", value: 500 },
+    { month: "Dec", value: 700 },
+  ];
 
   const contractStatusData = [
     {
@@ -151,6 +182,7 @@ const DashboardPage = () => {
 
   useEffect(() => {
     getContractReport();
+    getAllContracts();
   }, []);
 
   return (
@@ -421,6 +453,42 @@ const DashboardPage = () => {
               </Box>
             </>
           )}
+        </Card>
+        <Card
+          sx={{
+            mt: 3,
+            width: "90%",
+            p: 2,
+            ...(loading && {
+              display: "flex",
+              justifyContent: "center",
+              py: 6,
+            }),
+          }}
+        >
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography gutterBottom>
+              4. Thống kê số hợp đồng (theo năm)
+            </Typography>
+          </Box>
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart
+              data={contractsByYear}
+              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="year" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="count"
+                stroke="#8884d8"
+                strokeWidth={2}
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </Card>
       </Box>
     </Box>
