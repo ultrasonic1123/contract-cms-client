@@ -13,11 +13,12 @@ import {
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../../const/api";
+import { RemoveRedEye } from "@mui/icons-material";
 
 const roles = [
   { value: "Super Admin", label: "Quản trị viên" },
-  { value: "employee", label: "Nhân viên kinh doanh" },
-  { value: "director", label: "Ban giám đốc" },
+  { value: "Nhân viên kinh doanh", label: "Nhân viên kinh doanh" },
+  { value: "Ban giám đốc", label: "Ban giám đốc" },
 ];
 
 const AccountForm = () => {
@@ -35,20 +36,40 @@ const AccountForm = () => {
   const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
-    await axios.post(
-      `${BASE_URL}/user`,
-      {
-        fullname: employeeName,
-        username,
-        password,
-        role,
-        email,
-        active,
-      },
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    if (isCreate) {
+      await axios.post(
+        `${BASE_URL}/user`,
+        {
+          fullname: employeeName,
+          username,
+          password,
+          role,
+          email,
+          active,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    if (!isCreate) {
+      await axios.put(
+        `${BASE_URL}/user/${id}`,
+        {
+          fullname: employeeName,
+          username,
+          role,
+          email,
+          password,
+          active,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
     setLoading(false);
     navigate("/accounts");
   };
@@ -132,18 +153,20 @@ const AccountForm = () => {
               required
             />
           </Grid>
-          <Grid item xs={12}>
-            <TextField
-              size="small"
-              fullWidth
-              label="Mật Khẩu"
-              type="password"
-              variant="outlined"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </Grid>
+          {id != 1 && (
+            <Grid item xs={12}>
+              <TextField
+                size="small"
+                fullWidth
+                label="Mật Khẩu"
+                type="password"
+                variant="outlined"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </Grid>
+          )}
           <Grid item xs={12}>
             <TextField
               size="small"

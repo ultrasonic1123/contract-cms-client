@@ -23,7 +23,7 @@ export const BillStatus = {
 
 export const UserRole = {
   SuperAdmin: "Super Admin",
-  Sale: "Nhân viên Kinh doanh",
+  Sale: "Nhân viên kinh doanh",
   Director: "Ban giám đốc",
 };
 

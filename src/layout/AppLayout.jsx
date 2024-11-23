@@ -30,6 +30,7 @@ import { logout } from "../store/features/authSlice";
 import { BASE_URL } from "../const/api";
 import { setUser } from "../store/features/authSlice";
 import axios from "axios";
+import { UserRole } from "../const/constant";
 
 const drawerWidth = 240;
 
@@ -106,57 +107,75 @@ export default function AppLayout() {
           <Divider />
           <List>
             {[
-              { text: "Tổng quan", icon: <Dashboard />, path: "/dashboard" },
-              { text: "Dự Án", icon: <DisplaySettings />, path: "/projects" },
-              { text: "Hợp Đồng", icon: <Assignment />, path: "/contracts" },
+              {
+                text: "Tổng quan",
+                icon: <Dashboard />,
+                path: "/dashboard",
+                roles: [UserRole.SuperAdmin, UserRole.Director],
+              },
+              {
+                text: "Dự Án",
+                icon: <DisplaySettings />,
+                path: "/projects",
+                roles: [UserRole.SuperAdmin, UserRole.Sale, UserRole.Director],
+              },
+              {
+                text: "Hợp Đồng",
+                icon: <Assignment />,
+                path: "/contracts",
+                roles: [UserRole.SuperAdmin, UserRole.Sale, UserRole.Director],
+              },
               {
                 text: "Thanh Toán",
                 icon: <MonetizationOn />,
                 path: "/payments",
+                roles: [UserRole.SuperAdmin, UserRole.Sale, UserRole.Director],
               },
               {
                 text: "Tài Khoản",
                 icon: <ManageAccounts />,
                 path: "/accounts",
+                roles: [UserRole.SuperAdmin, UserRole.Director],
               },
-              { text: "Chủ Đầu Tư", icon: <People />, path: "/investors" },
               {
-                /* {
-                text: "Báo Cáo Thống Kê",
-                icon: <BarChart />,
-                path: "/reports",
-              }, */
+                text: "Chủ Đầu Tư",
+                icon: <People />,
+                path: "/investors",
+                roles: [UserRole.SuperAdmin, UserRole.Sale, UserRole.Director],
               },
-            ].map((item) => (
-              <ListItem
-                button
-                key={item.text}
-                component={Link}
-                to={item.path}
-                sx={{
-                  color: location.pathname.includes(item.path)
-                    ? "primary.main"
-                    : "inherit", // Thay đổi màu cho mục active
-                  backgroundColor: location.pathname.includes(item.path)
-                    ? "action.selected"
-                    : "transparent", // Thay đổi màu nền
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    color: location.pathname.includes(item.path)
-                      ? "primary.main"
-                      : "inherit",
-                  }}
-                >
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.text}
-                  primaryTypographyProps={{ variant: "body2" }}
-                />
-              </ListItem>
-            ))}
+            ].map(
+              (item) =>
+                item.roles?.includes(user?.role) && (
+                  <ListItem
+                    button
+                    key={item.text}
+                    component={Link}
+                    to={item.path}
+                    sx={{
+                      color: location.pathname.includes(item.path)
+                        ? "primary.main"
+                        : "inherit", // Thay đổi màu cho mục active
+                      backgroundColor: location.pathname.includes(item.path)
+                        ? "action.selected"
+                        : "transparent", // Thay đổi màu nền
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        color: location.pathname.includes(item.path)
+                          ? "primary.main"
+                          : "inherit",
+                      }}
+                    >
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.text}
+                      primaryTypographyProps={{ variant: "body2" }}
+                    />
+                  </ListItem>
+                )
+            )}
           </List>
         </Drawer>
       )}

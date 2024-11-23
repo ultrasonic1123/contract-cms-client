@@ -263,9 +263,12 @@ const ContractList = () => {
           loading={loading}
           rows={contracts}
           columns={columns}
-          pagination={false}
+          // pagination={false}
           disableColumnFilter
-          hideFooter
+          // hideFooter
+          dataSet="Commodity"
+          rowLength={500}
+          maxColumns={6}
         />
         {contracts.length === 0 && !loading && (
           <Typography variant="h6" color="text.secondary" align="center" my={6}>

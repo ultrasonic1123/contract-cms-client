@@ -190,10 +190,11 @@ const ProjectList = () => {
         <DataGrid
           rows={rows}
           columns={columns}
-          pagination={false}
+          pagination={true}
           disableColumnFilter
-          hideFooter
+          // hideFooter
           loading={loading}
+          pageSizeOptions={[1, 5, 10, 25]}
         />
         {rows.length === 0 && !loading && (
           <Typography variant="h6" color="text.secondary" align="center" my={6}>

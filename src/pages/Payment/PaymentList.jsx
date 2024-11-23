@@ -48,13 +48,6 @@ const PaymentList = () => {
 
   const columns = [
     {
-      field: "id",
-      headerName: "ID",
-      width: 50,
-      disableColumnMenu: true,
-      sortable: false,
-    },
-    {
       field: "contractId",
       width: 150,
       headerName: "ID Hợp Đồng",
@@ -102,6 +95,7 @@ const PaymentList = () => {
               component={Link}
               to={`/payments/edit/${params.row.id}`}
               aria-label="view"
+              disabled={BillStatus.Pending != params.row.status}
             >
               <Visibility />
             </IconButton>
@@ -202,9 +196,10 @@ const PaymentList = () => {
           loading={loading}
           rows={payments}
           columns={columns}
-          pagination={false}
+          pagination={true}
           disableColumnFilter
-          hideFooter
+          // hideFooter
+          pageSizeOptions={[1, 5, 10, 25]}
         />
         {payments.length === 0 && !loading && (
           <Typography variant="h6" color="text.secondary" align="center" my={6}>

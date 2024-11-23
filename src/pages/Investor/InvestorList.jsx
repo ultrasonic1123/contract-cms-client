@@ -12,6 +12,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../const/api";
 import { Add, FileDownloadOutlined, Visibility } from "@mui/icons-material";
+import { PermissionWarp } from "../../layout/components";
+import { UserRole } from "../../const/constant";
 
 const columns = [
   {
@@ -125,16 +127,18 @@ const InvestorList = () => {
         <Typography color="text.primary">Danh Sách Nhà Đầu Tư</Typography>
       </Breadcrumbs>
       <Box sx={{ display: "flex", justifyContent: "end" }}>
-        <Button
-          disabled={isDownLoad}
-          loading={isDownLoad}
-          variant="outlined"
-          endIcon={<FileDownloadOutlined />}
-          sx={{ mb: 2, mr: 2 }}
-          onClick={downloadContractXLXS}
-        >
-          Xuất báo cáo
-        </Button>
+        <PermissionWarp role={[UserRole.Director, UserRole.SuperAdmin]}>
+          <Button
+            disabled={isDownLoad}
+            loading={isDownLoad}
+            variant="outlined"
+            endIcon={<FileDownloadOutlined />}
+            sx={{ mb: 2, mr: 2 }}
+            onClick={downloadContractXLXS}
+          >
+            Xuất báo cáo
+          </Button>
+        </PermissionWarp>
         <Button
           variant="contained"
           color="primary"

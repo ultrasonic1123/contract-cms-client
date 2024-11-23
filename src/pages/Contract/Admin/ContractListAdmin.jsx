@@ -309,9 +309,11 @@ const ContractListAdmin = () => {
           loading={loading}
           rows={contracts}
           columns={columns}
-          pagination={false}
+          pagination
           disableColumnFilter
-          hideFooter
+          // hideFooter
+
+          pageSizeOptions={[5, 10, 25]}
         />
         {contracts.length === 0 && !loading && (
           <Typography variant="h6" color="text.secondary" align="center" my={6}>
