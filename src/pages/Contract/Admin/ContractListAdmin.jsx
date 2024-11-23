@@ -7,29 +7,42 @@ import {
   Card,
   Breadcrumbs,
   Input,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { Add, Visibility } from "@mui/icons-material";
+import { Add, BrowserUpdated, Visibility } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import { BASE_URL } from "../../const/api";
+import { BASE_URL } from "../../../const/api";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
-import ModalJobs from "./ModalJobs";
+import ModalJobs from "../ModalJobs";
 import WorkIcon from "@mui/icons-material/Work";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
-import ModalCancel from "./ModalCancel";
-import { ContractStatus } from "../../const/constant";
+import ModalCancel from "../ModalCancel";
+import { ContractStatus } from "../../../const/constant";
+import Modalbrowse from "./Modalbrowse";
+import InputSearch from "../../../components/InputSearch";
 
-const ContractList = () => {
+const ContractListAdmin = () => {
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedContract, setSelectedContract] = useState(null);
   const [isOpenModalCancel, setIsOpenModalCancel] = useState(false);
+  const [isOpenModalBrowse, setIsOpenModalBrowse] = useState(false);
+  const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
 
   const getListContract = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${BASE_URL}/contract`);
+      const filterText =
+        filter !== "all" ? `filter={"status": "${filter}"}` : "";
+      const res = await fetch(
+        `${BASE_URL}/contract?search=${search}&${filterText}`
+      );
       const { data } = await res.json();
       if (data?.results) {
         console.log({ data });
@@ -49,7 +62,7 @@ const ContractList = () => {
 
   useEffect(() => {
     getListContract();
-  }, []);
+  }, [filter, search]);
 
   const columns = [
     {
@@ -162,6 +175,22 @@ const ContractList = () => {
           >
             <DoDisturbOnIcon />
           </IconButton>
+
+          <IconButton
+            onClick={() => {
+              setSelectedContract(params.row);
+              setIsOpenModalCancel(true);
+            }}
+            color="primary"
+            aria-label="cancel"
+            disabled={[
+              ContractStatus.Cancel,
+              ContractStatus.Done,
+              ContractStatus.PendingCancel,
+            ].includes(params.row.status)}
+          >
+            <DoDisturbOnIcon />
+          </IconButton>
         </Box>
       ),
     },
@@ -182,28 +211,57 @@ const ContractList = () => {
         <Link to="/">Trang Chủ</Link>
         <Typography color="text.primary">Danh Sách Hợp Đồng</Typography>
       </Breadcrumbs>
-      <Box sx={{ display: "flex", justifyContent: "end" }}>
-        <Button
-          variant="contained"
-          color="primary"
-          component={Link}
-          to="/contracts/manage-jobs"
-          sx={{ mb: 2, mr: 2 }}
-          endIcon={<WorkIcon />}
-        >
-          Quản lý công việc
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          component={Link}
-          to="/contracts/create"
-          sx={{ mb: 2 }}
-          endIcon={<Add />}
-        >
-          Thêm Hợp Đồng
-        </Button>
+      <Box
+        sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}
+      >
+        <Box sx={{ display: "flex" }}>
+          <InputSearch value={search} setValue={setSearch} />
+          <Box sx={{ minWidth: 240, marginInlineStart: 2 }}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={filter}
+                label="Trạng thái"
+                onChange={(e) => setFilter(e.target.value)}
+                size="small"
+              >
+                {Object.values(ContractStatus).map((v, index) => {
+                  return (
+                    <MenuItem key={index} value={v}>
+                      {v}
+                    </MenuItem>
+                  );
+                })}
+                <MenuItem value={"all"}>Tất cả</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "end" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ mb: 2, mr: 2 }}
+            endIcon={<BrowserUpdated />}
+            onClick={() => setIsOpenModalBrowse(true)}
+          >
+            Duyệt
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            component={Link}
+            to="/contracts/manage-jobs"
+            sx={{ mb: 2, mr: 2 }}
+            endIcon={<WorkIcon />}
+          >
+            Quản lý công việc
+          </Button>
+        </Box>
       </Box>
+
       <Card style={{ width: "100%" }}>
         <DataGrid
           loading={loading}
@@ -234,8 +292,14 @@ const ContractList = () => {
         selected={selectedContract}
         refresh={getListContract}
       />
+
+      <Modalbrowse
+        open={isOpenModalBrowse}
+        handleClose={() => setIsOpenModalBrowse(false)}
+        refresh={getListContract}
+      ></Modalbrowse>
     </Box>
   );
 };
 
-export default ContractList;
+export default ContractListAdmin;

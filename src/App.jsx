@@ -9,7 +9,8 @@ import ProjectList from "./pages/project/ProjectList";
 import ProjectForm from "./pages/project/ProjectForm";
 import ContractForm from "./pages/contract/ContractForm";
 import ContractList from "./pages/Contract/ContractList";
-import PaymentList from "./pages/payment/PaymentList";
+import ContractListAdmin from "./pages/Contract/Admin/ContractListAdmin";
+import PaymentList from "./pages/payment/PaymentList/";
 import PaymentForm from "./pages/payment/PaymentForm";
 import AccountList from "./pages/account/AccountList";
 import AccountForm from "./pages/account/AccountForm";
@@ -17,11 +18,24 @@ import Report from "./pages/report";
 import InvestorList from "./pages/investor/InvestorList";
 import InvestorForm from "./pages/investor/InvestorForm";
 import NotFound from "./pages/not_found";
-// import Overview from "./pages/Contract/OverView";
 import ManageJob from "./pages/Contract/ManageJob";
 import DashboardPage from "./pages/dashboard";
+import { useGetUserStore } from "./store/features/authSlice";
+import { useMemo } from "react";
+import { UserRole } from "./const/constant";
 
 function App() {
+  const user = useGetUserStore();
+
+  const ContractPage = useMemo(() => {
+    if (
+      user?.role &&
+      [UserRole.SuperAdmin, UserRole.Director].includes(user.role)
+    )
+      return ContractListAdmin;
+    return ContractList;
+  }, [user]);
+
   return (
     <Router>
       <Routes>
@@ -33,7 +47,7 @@ function App() {
           <Route path="/projects/create" element={<ProjectForm />} />
           <Route path="/projects/edit/:id" element={<ProjectForm />} />
           {/*contracts route */}
-          <Route path="/contracts" element={<ContractList />} />
+          <Route path="/contracts" element={<ContractPage />} />
           <Route path="/contracts/create" element={<ContractForm />} />
           <Route path="/contracts/edit/:id" element={<ContractForm />} />
           {/*payments route*/}

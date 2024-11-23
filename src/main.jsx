@@ -11,12 +11,15 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Provider } from "react-redux";
 import store from "./store";
+import { ConfirmProvider } from "material-ui-confirm";
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <App />
+        <ConfirmProvider>
+          <App />
+        </ConfirmProvider>
       </LocalizationProvider>
     </ThemeProvider>
   </Provider>
