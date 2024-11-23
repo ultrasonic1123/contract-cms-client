@@ -29,6 +29,7 @@ import { useEffect, useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers";
 import { FileDownloadOutlined } from "@mui/icons-material";
 import formatMoney from "../../helpers/formatMoney";
+import dayjs from "dayjs";
 
 const COLORS = [
   "#72BF6A",
@@ -44,8 +45,12 @@ const DashboardPage = () => {
   const [contracts, setContracts] = useState([]);
   const [contractsByYear, setContractsByYear] = useState([]);
   const [projects, setProjects] = useState([]);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndSate] = useState(null);
+  const defaultStartDate = new Date();
+  const defaultEndDate = new Date();
+  const [startDate, setStartDate] = useState(
+    dayjs(defaultStartDate.setDate(defaultStartDate.getDate() - 30))
+  );
+  const [endDate, setEndSate] = useState(dayjs(defaultEndDate));
   const [loading, setLoading] = useState(false);
 
   const getTotalContractsAmount = () => {
@@ -62,11 +67,30 @@ const DashboardPage = () => {
     }
   };
 
+  const downloadContractXLXS = async () => {
+    const response = await axios.get(
+      `${BASE_URL}/report/contract/download-contract?startDate=${dayjs(
+        startDate
+      ).format("YYYY-MM-DD")}&endDate=${dayjs(endDate).format("YYYY-MM-DD")}`,
+      {
+        responseType: "blob",
+      }
+    );
+    console.log({ response });
+    const blob = response.data;
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "example.xlsx"; // Suggested file name
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const getContractReport = async () => {
     const { data: resData } = await axios.get(
-      `${BASE_URL}/report/contract?startDate=${startDate ?? ""}&endDate=${
-        endDate ?? ""
-      }`
+      `${BASE_URL}/report/contract?startDate=${dayjs(startDate).format(
+        "YYYY-MM-DD"
+      )}&endDate=${dayjs(endDate).format("YYYY-MM-DD")}`
     );
     if (resData.data) {
       setContracts(resData.data.map((x) => ({ ...x.contract })));
@@ -127,27 +151,6 @@ const DashboardPage = () => {
       },
     ].filter((x) => x.value);
   };
-
-  const getContractReportByYear = async () => {
-    // return
-  };
-
-  console.log({ contractsByYear });
-
-  const data = [
-    { month: "Jan", value: 400 },
-    { month: "Feb", value: 300 },
-    { month: "Mar", value: 500 },
-    { month: "Apr", value: 700 },
-    { month: "May", value: 200 },
-    { month: "Jun", value: 600 },
-    { month: "Jul", value: 800 },
-    { month: "Aug", value: 900 },
-    { month: "Sep", value: 400 },
-    { month: "Oct", value: 300 },
-    { month: "Nov", value: 500 },
-    { month: "Dec", value: 700 },
-  ];
 
   const contractStatusData = [
     {
@@ -335,6 +338,7 @@ const DashboardPage = () => {
                   startIcon={<FileDownloadOutlined />}
                   onClick={() => {
                     console.log("Xuất báo cáo về hợp đồng");
+                    downloadContractXLXS();
                   }}
                 >
                   Xuất báo cáo
@@ -468,7 +472,7 @@ const DashboardPage = () => {
         >
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography gutterBottom>
-              4. Thống kê số hợp đồng (theo năm)
+              5. Thống kê số hợp đồng (theo năm)
             </Typography>
           </Box>
           <ResponsiveContainer width="100%" height={400}>
