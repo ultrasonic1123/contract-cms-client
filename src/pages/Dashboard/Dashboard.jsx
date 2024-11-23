@@ -52,6 +52,7 @@ const DashboardPage = () => {
   );
   const [endDate, setEndSate] = useState(dayjs(defaultEndDate));
   const [loading, setLoading] = useState(false);
+  const [isdownLoad, setIsDownLoad] = useState(false);
 
   const getTotalContractsAmount = () => {
     const total = contracts.reduce((acc, curr) => acc + curr.amount, 0);
@@ -68,22 +69,29 @@ const DashboardPage = () => {
   };
 
   const downloadContractXLXS = async () => {
-    const response = await axios.get(
-      `${BASE_URL}/report/contract/download-contract?startDate=${dayjs(
-        startDate
-      ).format("YYYY-MM-DD")}&endDate=${dayjs(endDate).format("YYYY-MM-DD")}`,
-      {
-        responseType: "blob",
-      }
-    );
-    console.log({ response });
-    const blob = response.data;
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "example.xlsx"; // Suggested file name
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    try {
+      setIsDownLoad(true);
+      const response = await axios.get(
+        `${BASE_URL}/report/contract/download-contract?startDate=${dayjs(
+          startDate
+        ).format("YYYY-MM-DD")}&endDate=${dayjs(endDate).format("YYYY-MM-DD")}`,
+        {
+          responseType: "blob",
+        }
+      );
+      console.log({ response });
+      const blob = response.data;
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "bao_cao_hop_dong.xlsx";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (e) {
+      console.log("Error", e);
+    } finally {
+      setIsDownLoad(false);
+    }
   };
 
   const getContractReport = async () => {
@@ -334,6 +342,8 @@ const DashboardPage = () => {
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography gutterBottom>2. Trạng thái hợp đồng</Typography>
                 <Button
+                  disabled={isdownLoad}
+                  loading={isdownLoad}
                   variant="outlined"
                   startIcon={<FileDownloadOutlined />}
                   onClick={() => {
