@@ -13,7 +13,13 @@ import {
   MenuItem,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { Add, BrowserUpdated, Visibility } from "@mui/icons-material";
+import {
+  Add,
+  Assessment,
+  BrowserUpdated,
+  PlayCircle,
+  Visibility,
+} from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { BASE_URL } from "../../../const/api";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
@@ -24,6 +30,8 @@ import ModalCancel from "../ModalCancel";
 import { ContractStatus } from "../../../const/constant";
 import Modalbrowse from "./Modalbrowse";
 import InputSearch from "../../../components/InputSearch";
+import axios from "axios";
+import { confirm } from "material-ui-confirm";
 
 const ContractListAdmin = () => {
   const [contracts, setContracts] = useState([]);
@@ -64,6 +72,24 @@ const ContractListAdmin = () => {
     getListContract();
   }, [filter, search]);
 
+  const handleSubmit = (item, status) => {
+    confirm({
+      description: <>Xác nhận hành động này?</>,
+    }).then(async () => {
+      setLoading(true);
+      try {
+        const response = await axios.patch(
+          `${BASE_URL}/contract/${item.id}/${status}`
+        );
+        getListContract();
+        return response;
+      } catch (error) {
+        console.error("Error", error);
+      } finally {
+        setLoading(false);
+      }
+    });
+  };
   const columns = [
     {
       field: "contractName",
@@ -134,7 +160,7 @@ const ContractListAdmin = () => {
     {
       field: "actions",
       headerName: "Hành động",
-      flex: 1,
+      flex: 1.8,
       disableColumnMenu: true,
       sortable: false,
       renderCell: (params) => (
@@ -144,6 +170,7 @@ const ContractListAdmin = () => {
             to={`/contracts/edit/${params.row.id}`}
             color="primary"
             aria-label="view"
+            disabled={![ContractStatus.Pending].includes(params.row.status)}
           >
             <Visibility />
           </IconButton>
@@ -155,7 +182,13 @@ const ContractListAdmin = () => {
             }}
             color="primary"
             aria-label="jobs"
-            disabled={[ContractStatus.Cancel].includes(params.row.status)}
+            disabled={[
+              ContractStatus.Doing,
+              ContractStatus.Done,
+              ContractStatus.PendingCancel,
+              ContractStatus.Comfirm,
+              ContractStatus.Pending,
+            ].includes(params.row.status)}
           >
             <WorkHistoryIcon />
           </IconButton>
@@ -171,6 +204,9 @@ const ContractListAdmin = () => {
               ContractStatus.Cancel,
               ContractStatus.Done,
               ContractStatus.PendingCancel,
+              ContractStatus.Pending,
+              ContractStatus.Comfirm,
+              ContractStatus.Signing,
             ].includes(params.row.status)}
           >
             <DoDisturbOnIcon />
@@ -178,18 +214,24 @@ const ContractListAdmin = () => {
 
           <IconButton
             onClick={() => {
-              setSelectedContract(params.row);
-              setIsOpenModalCancel(true);
+              handleSubmit(params.row, "sign");
             }}
             color="primary"
-            aria-label="cancel"
-            disabled={[
-              ContractStatus.Cancel,
-              ContractStatus.Done,
-              ContractStatus.PendingCancel,
-            ].includes(params.row.status)}
+            aria-label="sign"
+            disabled={![ContractStatus.Pending].includes(params.row.status)}
           >
-            <DoDisturbOnIcon />
+            <Assessment />
+          </IconButton>
+
+          <IconButton
+            onClick={() => {
+              handleSubmit(params.row, "doing");
+            }}
+            color="primary"
+            aria-label="doing"
+            disabled={![ContractStatus.Signing].includes(params.row.status)}
+          >
+            <PlayCircle />
           </IconButton>
         </Box>
       ),

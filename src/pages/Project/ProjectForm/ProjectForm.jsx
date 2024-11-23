@@ -213,7 +213,7 @@ const CreateProject = () => {
               }}
               sx={{ width: "100%" }}
             >
-              {investors.map((item) => (
+              {investors?.map((item) => (
                 <MenuItem key={item.id} value={item.id}>
                   {item.name}
                 </MenuItem>

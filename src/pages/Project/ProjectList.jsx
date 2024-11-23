@@ -11,67 +11,133 @@ import { useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../const/api";
-import { Add, Visibility } from "@mui/icons-material";
-
-const columns = [
-  {
-    field: "id",
-    headerName: "ID",
-    width: 90,
-    disableColumnMenu: true,
-    sortable: false,
-  },
-  {
-    field: "name",
-    headerName: "Tên Dự Án",
-    width: 200,
-    disableColumnMenu: true,
-    sortable: false,
-  },
-  {
-    field: "startDate",
-    headerName: "Ngày bắt đầu",
-    width: 150,
-    disableColumnMenu: true,
-    sortable: false,
-  },
-  {
-    field: "endDate",
-    headerName: "Ngày kết thúc",
-    width: 150,
-    disableColumnMenu: true,
-    sortable: false,
-  },
-  {
-    field: "createdAt",
-    headerName: "Ngày Tạo",
-    width: 180,
-    disableColumnMenu: true,
-    sortable: false,
-  },
-  {
-    field: "actions",
-    headerName: "Xem Chi Tiết",
-    flex: 1,
-    sortable: false,
-    disableColumnMenu: true,
-    renderCell: (params) => (
-      <IconButton
-        color="primary"
-        component={Link}
-        to={`/projects/edit/${params.row.id}`}
-        aria-label="view"
-      >
-        <Visibility />
-      </IconButton>
-    ),
-  },
-];
+import { Add, PlayCircle, Visibility } from "@mui/icons-material";
+import { PermissionWarp } from "../../layout/components";
+import { ProjectStatus, UserRole } from "../../const/constant";
+import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
+import ModalCancel from "../Project/ModalCancel";
+import { confirm } from "material-ui-confirm";
 
 const ProjectList = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
+  const [selected, setSelected] = useState();
+  const [isOpenModalCancel, setIsOpenModalCancel] = useState(false);
+
+  const handleSubmit = (item) => {
+    confirm({
+      description: <>Hoàn thành dự án này?</>,
+    }).then(async () => {
+      setLoading(true);
+      try {
+        const response = await axios.patch(
+          `${BASE_URL}/project/${item.id}/complete`
+        );
+        getProjects();
+        return response;
+      } catch (error) {
+        console.error("Error", error);
+      } finally {
+        setLoading(false);
+      }
+    });
+  };
+
+  const columns = [
+    {
+      field: "id",
+      headerName: "ID",
+      width: 90,
+      disableColumnMenu: true,
+      sortable: false,
+    },
+    {
+      field: "name",
+      headerName: "Tên Dự Án",
+      width: 250,
+      disableColumnMenu: true,
+      sortable: false,
+    },
+    {
+      field: "startDate",
+      headerName: "Ngày bắt đầu",
+      width: 150,
+      disableColumnMenu: true,
+      sortable: false,
+    },
+    {
+      field: "endDate",
+      headerName: "Ngày kết thúc",
+      width: 150,
+      disableColumnMenu: true,
+      sortable: false,
+    },
+    {
+      field: "createdAt",
+      headerName: "Ngày Tạo",
+      width: 180,
+      disableColumnMenu: true,
+      sortable: false,
+    },
+    {
+      field: "status",
+      headerName: "Trạng thái",
+      width: 180,
+      disableColumnMenu: true,
+      sortable: false,
+    },
+    {
+      field: "actions",
+      headerName: "Hành động",
+      flex: 1,
+      sortable: false,
+      disableColumnMenu: true,
+      renderCell: (params) => (
+        <Box>
+          <IconButton
+            color="primary"
+            component={Link}
+            to={`/projects/edit/${params.row.id}`}
+            aria-label="view"
+            disabled={![ProjectStatus.Doing].includes(params.row.status)}
+          >
+            <Visibility />
+          </IconButton>
+
+          <PermissionWarp role={[UserRole.SuperAdmin, UserRole.Director]}>
+            <IconButton
+              onClick={() => {
+                setSelected(params.row);
+                setIsOpenModalCancel(true);
+              }}
+              color="primary"
+              aria-label="cancel"
+              disabled={![ProjectStatus.Doing].includes(params.row.status)}
+            >
+              <DoDisturbOnIcon />
+            </IconButton>
+
+            <IconButton
+              onClick={() => {
+                handleSubmit(params.row);
+              }}
+              color="primary"
+              aria-label="doing"
+              disabled={
+                ![ProjectStatus.Doing].includes(params.row.status) ||
+                params.row.phases.filter(
+                  (p) => p.contract.status != ContractStatus.Done
+                ).length > 0
+              }
+            >
+              <PlayCircle />
+            </IconButton>
+          </PermissionWarp>
+        </Box>
+      ),
+    },
+  ];
 
   const handleCreateProject = () => {
     navigate("/projects/create");
@@ -135,6 +201,16 @@ const ProjectList = () => {
           </Typography>
         )}
       </Card>
+
+      <ModalCancel
+        open={isOpenModalCancel}
+        handleClose={() => {
+          setIsOpenModalCancel(false);
+          setSelected(false);
+        }}
+        selected={selected}
+        refresh={getProjects}
+      />
     </Box>
   );
 };

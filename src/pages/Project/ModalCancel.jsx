@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Modal from "@mui/material/Modal";
 import { Box, Button, Typography } from "@mui/material";
-import CustomEditor from "../../components/CustomEditor/CustomEditor";
 import axios from "axios";
 import { BASE_URL } from "../../const/api";
+import CustomEditor from "../../components/CustomEditor/CustomEditor";
 
 const style = {
   position: "absolute",
@@ -25,9 +25,9 @@ function ModalCancel(props) {
 
   const handleSubmit = async () => {
     const { data } = await axios.patch(
-      `${BASE_URL}/contract/${selected.id}/cancel`,
+      `${BASE_URL}/project/${selected.id}/cancel`,
       {
-        reason_cancel: reason,
+        reason,
       }
     );
 
@@ -46,13 +46,13 @@ function ModalCancel(props) {
     >
       <Box sx={style}>
         <Typography align="center" fontSize={20} fontWeight={600} color="red">
-          Bạn muốn hủy hợp đồng?
+          Bạn muốn hủy dự án?
         </Typography>
         <Box sx={{ paddingBlockEnd: 5 }}>
           <CustomEditor
             value={reason}
             setValue={setReason}
-            name={"Lý do hủy hợp đồng?  *"}
+            name={"Lý do hủy dự án?  *"}
           />
         </Box>
         <Box
@@ -68,7 +68,7 @@ function ModalCancel(props) {
             sx={{ background: "red", color: "white", ml: 2 }}
             disabled={!reason || reason == "<p><br></p>"}
           >
-            Submit
+            Gửi
           </Button>
         </Box>
       </Box>
