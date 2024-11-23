@@ -15,6 +15,7 @@ import ModalQR from "./ModalQR";
 import { BillStatus } from "../../const/constant";
 import { confirm, ConfirmProvider } from "material-ui-confirm";
 import axios from "axios";
+import formatMoney from "../../helpers/formatMoney";
 
 const PaymentList = () => {
   const navigate = useNavigate();
@@ -49,24 +50,23 @@ const PaymentList = () => {
     {
       field: "id",
       headerName: "ID",
-      width: 100,
+      width: 50,
       disableColumnMenu: true,
       sortable: false,
     },
     {
       field: "contractId",
-      headerName: "ID Hợp Đồng",
       width: 150,
+      headerName: "ID Hợp Đồng",
       disableColumnMenu: true,
       sortable: false,
     },
     {
       field: "amount",
       headerName: "Số Tiền",
-      width: 200,
       disableColumnMenu: true,
       sortable: false,
-      valueGetter: (value) => Number(value).toLocaleString() + " vnd",
+      valueGetter: (value) => formatMoney(value),
     },
     {
       field: "paymentMethod",
@@ -97,17 +97,14 @@ const PaymentList = () => {
         const payment = params.row;
         return (
           <Box>
-            {[BillStatus.Pending].includes(payment.status) && (
-              <IconButton
-                color="primary"
-                component={Link}
-                to={`/payments/edit/${params.row.id}`}
-                aria-label="view"
-              >
-                <Visibility />
-              </IconButton>
-            )}
-
+            <IconButton
+              color="primary"
+              component={Link}
+              to={`/payments/edit/${params.row.id}`}
+              aria-label="view"
+            >
+              <Visibility />
+            </IconButton>
             {[BillStatus.Pending].includes(payment.status) &&
               payment.paymentMethod == "tranfer" && (
                 <IconButton

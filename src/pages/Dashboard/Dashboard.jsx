@@ -5,9 +5,7 @@ import {
   Card,
   Stack,
   TextField,
-  Grid,
   CircularProgress,
-  IconButton,
   Button,
 } from "@mui/material";
 import axios from "axios";
@@ -28,7 +26,15 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { FileDownloadOutlined } from "@mui/icons-material";
 import formatMoney from "../../helpers/formatMoney";
 
-const COLORS = ["#72BF6A", "#C0C5CC"];
+const COLORS = [
+  "#72BF6A",
+  "#C0C5CC",
+  "#b4d3d4",
+  "#ecd9bc",
+  "#ff8080",
+  "#7d898b",
+  "#b46a75",
+];
 
 const DashboardPage = () => {
   const [contracts, setContracts] = useState([]);
@@ -44,53 +50,107 @@ const DashboardPage = () => {
     return formatMoney(total);
   };
 
-  const getPayments = async () => {
-    const { data: resData } = await axios.get(`${BASE_URL}/contract`);
-    if (resData.success) {
-      setContracts(resData.data.results);
+  const getContractReport = async () => {
+    const { data: resData } = await axios.get(
+      `${BASE_URL}/report/contract?startDate=${startDate ?? ""}&endDate=${
+        endDate ?? ""
+      }`
+    );
+    if (resData.data) {
+      setContracts(resData.data.map((x) => ({ ...x.contract })));
+      setProjects(resData.data.map((x) => ({ ...x.project })));
+    } else {
+      setContracts([]);
     }
+    return resData;
   };
 
-  const getProjects = async () => {
-    const { data: resData } = await axios.get(`${BASE_URL}/project`);
-    if (resData.success) {
-      setProjects(resData.data.results);
-    }
+  const getReport = async () => {
+    setLoading(true);
+    await Promise.all([getContractReport()]);
+    setLoading(false);
   };
 
-  const getDoneProjects = () => {
-    return projects.filter((project) =>
-      project.phases.every((phase) =>
-        paidContracts.some((x) => x.id === phase.contract.id)
-      )
-    ).length;
+  const getServiceReportData = () => {
+    const services = contracts.map((x) => x.service);
+
+    return [
+      {
+        status: "Tư vấn",
+        count: services.filter((x) => x.name === "Tư vấn").length,
+      },
+      {
+        status: "Thiết kế",
+        count: services.filter((x) => x.name === "Thiết kế").length,
+      },
+      {
+        status: "Thẩm tra",
+        count: services.filter((x) => x.name === "Thẩm tra").length,
+      },
+      {
+        status: "Lập tài liệu",
+        count: services.filter((x) => x.name === "Lập tài liệu").length,
+      },
+    ];
   };
 
-  const projectData = [
+  const getPaymentReportData = () => {
+    const payments = contracts.reduce(
+      (acc, curr) => [...acc, ...curr.payments],
+      []
+    );
+
+    return [
+      {
+        name: "Chờ thanh toán",
+        value: payments.filter((x) => x.status === "Chờ thanh toán").length,
+      },
+      {
+        name: "Đã thanh toán",
+        value: payments.filter((x) => x.status === "Đã thanh toán").length,
+      },
+      {
+        name: "Đã hủy",
+        value: payments.filter((x) => x.status === "Đã hủy").length,
+      },
+    ].filter((x) => x.value);
+  };
+
+  console.log("check", getPaymentReportData());
+
+  const contractStatusData = [
     {
-      name: "Đã thanh toán",
-      value: paidContracts.length,
+      name: "Đang xử lý",
+      value: contracts.filter((x) => x.status === "Đang sử lý").length,
     },
     {
-      name: "Chưa thanh toán",
-      value: unpaidContracts.length,
+      name: "Đã ký",
+      value: contracts.filter((x) => x.status === "Đã ký").length,
     },
-  ];
-  const paymentData = [
-    { status: "Hoàn thành", count: getDoneProjects() },
-    { status: "Chưa hoàn thành", count: projects.length - getDoneProjects() },
-  ];
-
-  const serviceData = [
-    { status: "Tư vấn", count: 2 },
-    { status: "Thiết kế", count: 3 },
-    { status: "Thẩm tra", count: 4 },
-    { status: "Lập tài liệu", count: 6 },
-  ];
+    {
+      name: "Đang thực hiện",
+      value: contracts.filter((x) => x.status === "Đang thực hiện").length,
+    },
+    {
+      name: "Đã hoàn thành",
+      value: contracts.filter((x) => x.status === "Đã hoàn thành").length,
+    },
+    {
+      name: "Chờ duyệt hủy",
+      value: contracts.filter((x) => x.status === "Chờ duyệt hủy").length,
+    },
+    {
+      name: "Đã hủy",
+      value: contracts.filter((x) => x.status === "Đã hủy").length,
+    },
+    {
+      name: "Chờ duyệt",
+      value: contracts.filter((x) => x.status === "Chờ duyệt").length,
+    },
+  ].filter((x) => x.value);
 
   useEffect(() => {
-    getPayments();
-    getProjects();
+    getContractReport();
   }, []);
 
   return (
@@ -110,6 +170,7 @@ const DashboardPage = () => {
           p: 3,
         }}
       >
+        {/* Bộ lọc thời gian*/}
         <Card
           sx={{
             width: "90%",
@@ -124,11 +185,10 @@ const DashboardPage = () => {
               sx={{
                 width: "100%",
                 display: "flex",
-                justifyContent: "space-between",
+                justifyContent: "space-around",
               }}
             >
               <DatePicker
-                sx={{ width: "45%" }}
                 label="Từ ngày"
                 value={startDate}
                 onChange={(newValue) => setStartDate(newValue)}
@@ -137,7 +197,7 @@ const DashboardPage = () => {
                 )}
               />
               <DatePicker
-                sx={{ width: "45%" }}
+                sx={{ mx: 2 }}
                 label="Đến ngày"
                 value={endDate}
                 onChange={(newValue) => setEndSate(newValue)}
@@ -145,9 +205,13 @@ const DashboardPage = () => {
                   <TextField {...params} fullWidth required />
                 )}
               />
+              <Button variant="outlined" onClick={getReport} disabled={loading}>
+                Cập nhật dữ liệu báo cáo
+              </Button>
             </Box>
           </Stack>
         </Card>
+        {/* Thông tin chung */}
         <Card
           sx={{
             width: "90%",
@@ -167,18 +231,15 @@ const DashboardPage = () => {
               <Box
                 sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
               >
-                <Typography mb={2}>1. Tóm tắt thông tin</Typography>
-                <Button variant="outlined" startIcon={<FileDownloadOutlined />}>
-                  Xuất báo cáo
-                </Button>
+                <Typography mb={2}>1. Thông tin chung</Typography>
               </Box>
-              <Stack direction="row" gap="15px">
+              <Stack direction="row" gap="15px" justifyContent="space-around">
                 <Box
                   sx={{
                     border: "1px solid grey",
                     p: 2,
                     borderRadius: 3,
-                    bgcolor: "#e3e3e3",
+                    bgcolor: "#c0c5cc",
                   }}
                 >
                   <Typography>
@@ -193,7 +254,7 @@ const DashboardPage = () => {
                     border: "1px solid grey",
                     p: 2,
                     borderRadius: 3,
-                    bgcolor: "#e3e3e3",
+                    bgcolor: "#c0c5cc",
                   }}
                 >
                   Tổng giá trị hợp đồng:{" "}
@@ -206,7 +267,7 @@ const DashboardPage = () => {
                     border: "1px solid grey",
                     p: 2,
                     borderRadius: 3,
-                    bgcolor: "#e3e3e3",
+                    bgcolor: "#c0c5cc",
                   }}
                 >
                   Tổng số dự án:{" "}
@@ -218,9 +279,11 @@ const DashboardPage = () => {
             </Box>
           )}
         </Card>
+        {/* Thông tin hợp đồng */}
         <Card
           sx={{
             width: "90%",
+            mb: 3,
             p: 2,
             ...(loading && {
               display: "flex",
@@ -234,15 +297,21 @@ const DashboardPage = () => {
           ) : (
             <>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Typography gutterBottom>2. Tỷ lệ thanh toán</Typography>
-                <Button variant="outlined" startIcon={<FileDownloadOutlined />}>
+                <Typography gutterBottom>2. Trạng thái hợp đồng</Typography>
+                <Button
+                  variant="outlined"
+                  startIcon={<FileDownloadOutlined />}
+                  onClick={() => {
+                    console.log("Xuất báo cáo về hợp đồng");
+                  }}
+                >
                   Xuất báo cáo
                 </Button>
               </Box>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <PieChart width={500} height={300}>
                   <Pie
-                    data={projectData}
+                    data={contractStatusData}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
@@ -253,7 +322,7 @@ const DashboardPage = () => {
                     fill="#8884d8"
                     dataKey="value"
                   >
-                    {projectData.map((entry, index) => (
+                    {contractStatusData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index]} />
                     ))}
                   </Pie>
@@ -262,10 +331,10 @@ const DashboardPage = () => {
             </>
           )}
         </Card>
+        {/* Thông tin thanh toán */}
         <Card
           sx={{
             width: "90%",
-            mt: 3,
             p: 2,
             ...(loading && {
               display: "flex",
@@ -279,23 +348,35 @@ const DashboardPage = () => {
           ) : (
             <>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Typography gutterBottom>3. Tỷ lệ hoàn thành dự án</Typography>
+                <Typography gutterBottom>3. Tỷ lệ thanh toán</Typography>
                 <Button variant="outlined" startIcon={<FileDownloadOutlined />}>
                   Xuất báo cáo
                 </Button>
               </Box>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <BarChart width={300} height={250} data={paymentData}>
-                  <XAxis dataKey="status" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="count" fill="#82ca9d" />
-                </BarChart>
+                <PieChart width={600} height={300}>
+                  <Pie
+                    data={getPaymentReportData()}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) =>
+                      `${name} ${(percent * 100).toFixed(0)}%`
+                    }
+                    outerRadius={100}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {getPaymentReportData().map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                    ))}
+                  </Pie>
+                </PieChart>
               </Box>
             </>
           )}
         </Card>
+        {/* Thông tin dịch vụ */}
         <Card
           sx={{
             width: "90%",
@@ -313,18 +394,17 @@ const DashboardPage = () => {
           ) : (
             <>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Typography gutterBottom>
-                  4. Dịch vụ sử dụng trong hợp đồng
-                </Typography>
+                <Typography gutterBottom>4. Phân loại theo dịch vụ</Typography>
                 <Button variant="outlined" startIcon={<FileDownloadOutlined />}>
                   Xuất báo cáo
                 </Button>
               </Box>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <BarChart
+                  barSize={30}
                   width={500}
                   height={250}
-                  data={serviceData}
+                  data={getServiceReportData()}
                   margin={{
                     top: 20,
                     right: 30,
@@ -336,7 +416,7 @@ const DashboardPage = () => {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="count" fill="#82ca9d" />
+                  <Bar dataKey="count" fill="#82ca9d" width="20px" />
                 </BarChart>
               </Box>
             </>
