@@ -75,25 +75,25 @@ const Overview = ({ kanbanData, submit }) => {
           >
             <ColumnsDirective>
               <ColumnDirective
-                headerText="To Do"
+                headerText="Đang mở"
                 keyField="Open"
                 allowToggle={true}
                 template={columnTemplate.bind(this)}
               />
               <ColumnDirective
-                headerText="In Progress"
+                headerText="Đang thực hiện"
                 keyField="InProgress"
                 allowToggle={true}
                 template={columnTemplate.bind(this)}
               />
               <ColumnDirective
-                headerText="In Review"
+                headerText="Đang kiểm tra"
                 keyField="Review"
                 allowToggle={true}
                 template={columnTemplate.bind(this)}
               />
               <ColumnDirective
-                headerText="Done"
+                headerText="Hoàn thành"
                 keyField="Close"
                 allowToggle={true}
                 template={columnTemplate.bind(this)}

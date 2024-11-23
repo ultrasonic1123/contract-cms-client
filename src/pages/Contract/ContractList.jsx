@@ -9,7 +9,7 @@ import {
   Input,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { Add, Visibility } from "@mui/icons-material";
+import { Add, Done, Visibility } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { BASE_URL } from "../../const/api";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
@@ -18,6 +18,8 @@ import WorkIcon from "@mui/icons-material/Work";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import ModalCancel from "./ModalCancel";
 import { ContractStatus } from "../../const/constant";
+import { confirm } from "material-ui-confirm";
+import axios from "axios";
 
 const ContractList = () => {
   const [contracts, setContracts] = useState([]);
@@ -50,6 +52,31 @@ const ContractList = () => {
   useEffect(() => {
     getListContract();
   }, []);
+
+  const handleSubmitDone = (item) => {
+    confirm({
+      description: (
+        <>
+          Hoàn thành hợp đồng <b>{item.name}</b> này?
+        </>
+      ),
+    }).then(async () => {
+      setLoading(true);
+
+      try {
+        const response = await axios.patch(
+          `${BASE_URL}/contract/${item.id}/pending-complete`
+        );
+
+        await getListContract();
+        return response;
+      } catch (error) {
+        console.error("Error", error);
+      } finally {
+        setLoading(false);
+      }
+    });
+  };
 
   const columns = [
     {
@@ -121,7 +148,7 @@ const ContractList = () => {
     {
       field: "actions",
       headerName: "Hành động",
-      flex: 1,
+      flex: 1.5,
       disableColumnMenu: true,
       sortable: false,
       renderCell: (params) => (
@@ -142,7 +169,13 @@ const ContractList = () => {
             }}
             color="primary"
             aria-label="jobs"
-            disabled={[ContractStatus.Cancel].includes(params.row.status)}
+            disabled={[
+              ContractStatus.Doing,
+              ContractStatus.Done,
+              ContractStatus.PendingCancel,
+              ContractStatus.Comfirm,
+              ContractStatus.Pending,
+            ].includes(params.row.status)}
           >
             <WorkHistoryIcon />
           </IconButton>
@@ -158,9 +191,30 @@ const ContractList = () => {
               ContractStatus.Cancel,
               ContractStatus.Done,
               ContractStatus.PendingCancel,
+              ContractStatus.Pending,
+              ContractStatus.Comfirm,
+              ContractStatus.Signing,
             ].includes(params.row.status)}
           >
             <DoDisturbOnIcon />
+          </IconButton>
+
+          <IconButton
+            onClick={() => {
+              handleSubmitDone(params.row);
+            }}
+            color="primary"
+            aria-label="confirm"
+            disabled={[
+              ContractStatus.Cancel,
+              ContractStatus.Done,
+              ContractStatus.PendingCancel,
+              ContractStatus.Pending,
+              ContractStatus.Comfirm,
+              ContractStatus.Signing,
+            ].includes(params.row.status)}
+          >
+            <Done />
           </IconButton>
         </Box>
       ),

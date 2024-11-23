@@ -6,7 +6,7 @@ export const JobStatus = {
 };
 
 export const ContractStatus = {
-  Pending: "Đang xử lý",
+  Pending: "Đang sử lý",
   Signing: "Đã ký",
   Doing: "Đang thực hiện",
   Done: "Đã hoàn thành",
@@ -25,4 +25,10 @@ export const UserRole = {
   SuperAdmin: "Super Admin",
   Sale: "Nhân viên Kinh doanh",
   Director: "Ban giám đốc",
+};
+
+export const ProjectStatus = {
+  Doing: "Đang thực hiện",
+  Done: "Đã hoàn thành",
+  Cancel: "Đã hủy",
 };
