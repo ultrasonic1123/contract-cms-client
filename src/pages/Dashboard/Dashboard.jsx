@@ -93,6 +93,31 @@ const DashboardPage = () => {
     }
   };
 
+  const downloadContractProgressXLXS = async () => {
+    try {
+      setIsDownLoad(true);
+      const response = await axios.get(
+        `${BASE_URL}/report/contract/download-contract-progress?startDate=${dayjs(
+          startDate
+        ).format("YYYY-MM-DD")}&endDate=${dayjs(endDate).format("YYYY-MM-DD")}`,
+        {
+          responseType: "blob",
+        }
+      );
+      const blob = response.data;
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "bao_cao_hop_dong_tien_do.xlsx";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (e) {
+      console.log("Error", e);
+    } finally {
+      setIsDownLoad(false);
+    }
+  };
+
   const getContractReport = async () => {
     const { data: resData } = await axios.get(
       `${BASE_URL}/report/contract?startDate=${dayjs(startDate).format(
@@ -340,18 +365,31 @@ const DashboardPage = () => {
             <>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography gutterBottom>2. Trạng thái hợp đồng</Typography>
-                <Button
-                  disabled={isdownLoad}
-                  loading={isdownLoad}
-                  variant="outlined"
-                  startIcon={<FileDownloadOutlined />}
-                  onClick={() => {
-                    console.log("Xuất báo cáo về hợp đồng");
-                    downloadContractXLXS();
-                  }}
-                >
-                  Xuất báo cáo
-                </Button>
+                <Stack direction="row" gap={2}>
+                  <Button
+                    disabled={isdownLoad}
+                    loading={isdownLoad}
+                    variant="outlined"
+                    startIcon={<FileDownloadOutlined />}
+                    onClick={() => {
+                      console.log("Xuất báo cáo về hợp đồng");
+                      downloadContractXLXS();
+                    }}
+                  >
+                    Xuất báo cáo chung
+                  </Button>
+                  <Button
+                    disabled={isdownLoad}
+                    loading={isdownLoad}
+                    variant="outlined"
+                    startIcon={<FileDownloadOutlined />}
+                    onClick={() => {
+                      downloadContractProgressXLXS();
+                    }}
+                  >
+                    Xuất báo cáo tiến độ
+                  </Button>
+                </Stack>
               </Box>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <PieChart width={500} height={300}>
@@ -394,9 +432,6 @@ const DashboardPage = () => {
             <>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography gutterBottom>3. Tỷ lệ thanh toán</Typography>
-                <Button variant="outlined" startIcon={<FileDownloadOutlined />}>
-                  Xuất báo cáo
-                </Button>
               </Box>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <PieChart width={600} height={300}>
