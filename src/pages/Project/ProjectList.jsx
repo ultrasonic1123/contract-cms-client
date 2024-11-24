@@ -13,7 +13,7 @@ import axios from "axios";
 import { BASE_URL } from "../../const/api";
 import { Add, PlayCircle, Visibility } from "@mui/icons-material";
 import { PermissionWarp } from "../../layout/components";
-import { ProjectStatus, UserRole } from "../../const/constant";
+import { ContractStatus, ProjectStatus, UserRole } from "../../const/constant";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import ModalCancel from "../Project/ModalCancel";
 import { confirm } from "material-ui-confirm";
