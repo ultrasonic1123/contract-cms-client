@@ -100,7 +100,7 @@ const PaymentList = () => {
               <Visibility />
             </IconButton>
             {[BillStatus.Pending].includes(payment.status) &&
-              payment.paymentMethod == "tranfer" && (
+              payment.paymentMethod == "transfer" && (
                 <IconButton
                   color="primary"
                   aria-label="view"
