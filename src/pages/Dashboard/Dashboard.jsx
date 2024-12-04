@@ -30,6 +30,8 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { FileDownloadOutlined } from "@mui/icons-material";
 import formatMoney from "../../helpers/formatMoney";
 import dayjs from "dayjs";
+import { PermissionWarp } from "../../layout/components";
+import { UserRole } from "../../const/constant";
 
 const COLORS = [
   "#72BF6A",
@@ -83,6 +85,29 @@ const DashboardPage = () => {
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       link.download = "bao_cao_hop_dong.xlsx";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (e) {
+      console.log("Error", e);
+    } finally {
+      setIsDownLoad(false);
+    }
+  };
+
+  const downloadInvesterXLXS = async () => {
+    try {
+      setIsDownLoad(true);
+      const response = await axios.get(
+        `${BASE_URL}/report/contract/download-investor`,
+        {
+          responseType: "blob",
+        }
+      );
+      const blob = response.data;
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "bao_cao_doanh_thu.xlsx";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -434,6 +459,18 @@ const DashboardPage = () => {
             <>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography gutterBottom>3. Tỷ lệ thanh toán</Typography>
+                <PermissionWarp role={[UserRole.Director, UserRole.SuperAdmin]}>
+                  <Button
+                    disabled={isdownLoad}
+                    loading={isdownLoad}
+                    variant="outlined"
+                    endIcon={<FileDownloadOutlined />}
+                    sx={{ mb: 2, mr: 2 }}
+                    onClick={downloadInvesterXLXS}
+                  >
+                    Xuất báo cáo
+                  </Button>
+                </PermissionWarp>
               </Box>
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <PieChart width={600} height={300}>
