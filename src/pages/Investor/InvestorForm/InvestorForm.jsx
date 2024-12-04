@@ -89,13 +89,13 @@ const InvestorForm = () => {
         aria-label="breadcrumb"
         sx={{ mb: 2, justifyContent: "flex-start", width: "100%" }}
       >
-        <Link to="/investors">Danh Sách Nhà Đầu Tư</Link>
+        <Link to="/investors">Danh Sách Chủ Đầu Tư</Link>
         <Typography color="text.primary">{`${
           isCreate ? "Thêm" : "Cập Nhật"
-        } Nhà Đầu Tư`}</Typography>
+        } Chủ Đầu Tư`}</Typography>
       </Breadcrumbs>
       <Typography variant="h4" gutterBottom>
-        Thêm Nhà Đầu Tư
+        Thêm Chủ Đầu Tư
       </Typography>
       <form onSubmit={handleSubmit} style={{ width: "100%", maxWidth: 600 }}>
         <Grid container spacing={2}>
@@ -103,7 +103,7 @@ const InvestorForm = () => {
             <TextField
               size="small"
               fullWidth
-              label="Tên Nhà Đầu Tư"
+              label="Tên Chủ Đầu Tư"
               variant="outlined"
               value={name}
               onChange={(e) => setName(e.target.value)}

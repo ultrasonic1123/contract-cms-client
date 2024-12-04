@@ -183,11 +183,13 @@ const PaymentForm = () => {
                 labelId="demo-select-small-label"
                 required
               >
-                {contracts.map((item) => (
-                  <MenuItem key={item.id} value={item.id}>
-                    {item.contractName}
-                  </MenuItem>
-                ))}
+                {contracts
+                  .filter((v) => v.remaining > 0)
+                  .map((item) => (
+                    <MenuItem key={item.id} value={item.id}>
+                      {item.contractName}
+                    </MenuItem>
+                  ))}
               </Select>
             </Grid>
             <Grid item xs={12}>
@@ -209,6 +211,20 @@ const PaymentForm = () => {
                 }}
                 required
               />
+              {contractId && (
+                <div
+                  style={{
+                    paddingTop: "3px",
+                    color: "blue",
+                  }}
+                >
+                  ! Số tiền nhỏ hơn hoặc bằng{" "}
+                  {contracts
+                    .find((v) => v.id == contractId)
+                    ?.remaining?.toLocaleString()}{" "}
+                  vnd
+                </div>
+              )}
             </Grid>
             <Grid item xs={6}>
               <DatePicker

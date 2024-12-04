@@ -25,7 +25,7 @@ const columns = [
   },
   {
     field: "name",
-    headerName: "Tên Nhà Đầu Tư",
+    headerName: "Tên Chủ Đầu Tư",
     width: 200,
     disableColumnMenu: true,
     sortable: false,
@@ -124,7 +124,7 @@ const InvestorList = () => {
     <Box sx={{ p: 3 }}>
       <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
         <Link to="/">Trang Chủ</Link>
-        <Typography color="text.primary">Danh Sách Nhà Đầu Tư</Typography>
+        <Typography color="text.primary">Danh Sách Chủ Đầu Tư</Typography>
       </Breadcrumbs>
       <Box sx={{ display: "flex", justifyContent: "end" }}>
         <PermissionWarp role={[UserRole.Director, UserRole.SuperAdmin]}>
@@ -146,7 +146,7 @@ const InvestorList = () => {
           sx={{ mb: 2 }}
           endIcon={<Add />}
         >
-          Thêm Nhà Đầu Tư
+          Thêm Chủ Đầu Tư
         </Button>
       </Box>
       <Card style={{ width: "100%" }}>
@@ -159,7 +159,7 @@ const InvestorList = () => {
         />
         {rows.length === 0 && !loading && (
           <Typography variant="h6" color="text.secondary" align="center" my={6}>
-            Không có nhà đầu tư để hiển thị.
+            Không có chủ đầu tư để hiển thị.
           </Typography>
         )}
       </Card>

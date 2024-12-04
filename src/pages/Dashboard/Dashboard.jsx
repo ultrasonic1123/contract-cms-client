@@ -149,7 +149,9 @@ const DashboardPage = () => {
       },
       {
         status: "Thiết kế",
-        count: services.filter((x) => x.name === "Thiết kế").length,
+        count: services.filter(
+          (x) => x.name === "Thiết kế công trình, hệ thống liên quan"
+        ).length,
       },
       {
         status: "Thẩm tra",

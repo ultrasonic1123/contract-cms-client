@@ -27,11 +27,17 @@ const ContractList = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedContract, setSelectedContract] = useState(null);
   const [isOpenModalCancel, setIsOpenModalCancel] = useState(false);
+  const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
 
   const getListContract = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${BASE_URL}/contract`);
+      const filterText =
+        filter !== "all" ? `filter={"status": "${filter}"}` : "";
+      const res = await fetch(
+        `${BASE_URL}/contract?search=${search}&${filterText}`
+      );
       const { data } = await res.json();
       if (data?.results) {
         console.log({ data });
@@ -51,7 +57,7 @@ const ContractList = () => {
 
   useEffect(() => {
     getListContract();
-  }, []);
+  }, [filter, search]);
 
   const handleSubmitDone = (item) => {
     confirm({
@@ -236,27 +242,58 @@ const ContractList = () => {
         <Link to="/">Trang Chủ</Link>
         <Typography color="text.primary">Danh Sách Hợp Đồng</Typography>
       </Breadcrumbs>
-      <Box sx={{ display: "flex", justifyContent: "end" }}>
-        <Button
-          variant="contained"
-          color="primary"
-          component={Link}
-          to="/contracts/manage-jobs"
-          sx={{ mb: 2, mr: 2 }}
-          endIcon={<WorkIcon />}
-        >
-          Quản lý công việc
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          component={Link}
-          to="/contracts/create"
-          sx={{ mb: 2 }}
-          endIcon={<Add />}
-        >
-          Thêm Hợp Đồng
-        </Button>
+
+      <Box
+        sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}
+      >
+        <Box sx={{ display: "flex" }}>
+          <InputSearch value={search} setValue={setSearch} />
+          <Box sx={{ minWidth: 240, marginInlineStart: 2 }}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={filter}
+                label="Trạng thái"
+                onChange={(e) => setFilter(e.target.value)}
+                size="small"
+              >
+                {Object.values(ContractStatus).map((v, index) => {
+                  return (
+                    <MenuItem key={index} value={v}>
+                      {v}
+                    </MenuItem>
+                  );
+                })}
+                <MenuItem value={"all"}>Tất cả</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        </Box>
+
+        <Box sx={{ display: "flex", justifyContent: "end" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            component={Link}
+            to="/contracts/manage-jobs"
+            sx={{ mb: 2, mr: 2 }}
+            endIcon={<WorkIcon />}
+          >
+            Quản lý công việc
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            component={Link}
+            to="/contracts/create"
+            sx={{ mb: 2 }}
+            endIcon={<Add />}
+          >
+            Thêm Hợp Đồng
+          </Button>
+        </Box>
       </Box>
       <Card style={{ width: "100%" }}>
         <DataGrid

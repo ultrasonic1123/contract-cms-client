@@ -201,7 +201,7 @@ const CreateProject = () => {
           </Grid>
           <Grid item xs={12}>
             <InputLabel id="demo-select-small-label">
-              {"Thông Tin Nhà Đầu Tư *"}
+              {"Thông Tin Chủ Đầu Tư *"}
             </InputLabel>
             <Select
               size="small"
