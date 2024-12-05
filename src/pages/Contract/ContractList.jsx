@@ -20,6 +20,7 @@ import ModalCancel from "./ModalCancel";
 import { ContractStatus } from "../../const/constant";
 import { confirm } from "material-ui-confirm";
 import axios from "axios";
+import InputSearch from "../../components/InputSearch";
 
 const ContractList = () => {
   const [contracts, setContracts] = useState([]);
