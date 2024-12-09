@@ -182,7 +182,7 @@ const ContractListAdmin = () => {
             }}
             color="primary"
             aria-label="jobs"
-            disabled={[ContractStatus.Comfirm, ContractStatus.Pending].includes(
+            disabled={[ContractStatus.Signing, ContractStatus.Pending].includes(
               params.row.status
             )}
           >
