@@ -5,6 +5,7 @@ import {
   Breadcrumbs,
   Card,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useNavigate, Link } from "react-router-dom";
@@ -95,44 +96,50 @@ const ProjectList = () => {
       disableColumnMenu: true,
       renderCell: (params) => (
         <Box>
-          <IconButton
-            color="primary"
-            component={Link}
-            to={`/projects/edit/${params.row.id}`}
-            aria-label="view"
-            disabled={![ProjectStatus.Doing].includes(params.row.status)}
-          >
-            <Visibility />
-          </IconButton>
-
-          <PermissionWarp role={[UserRole.SuperAdmin, UserRole.Director]}>
+          <Tooltip title="Xem">
             <IconButton
-              onClick={() => {
-                setSelected(params.row);
-                setIsOpenModalCancel(true);
-              }}
               color="primary"
-              aria-label="cancel"
+              component={Link}
+              to={`/projects/edit/${params.row.id}`}
+              aria-label="view"
               disabled={![ProjectStatus.Doing].includes(params.row.status)}
             >
-              <DoDisturbOnIcon />
+              <Visibility />
             </IconButton>
+          </Tooltip>
 
-            <IconButton
-              onClick={() => {
-                handleSubmit(params.row);
-              }}
-              color="primary"
-              aria-label="doing"
-              disabled={
-                ![ProjectStatus.Doing].includes(params.row.status) ||
-                params.row.phases.filter(
-                  (p) => p.contract.status != ContractStatus.Done
-                ).length > 0
-              }
-            >
-              <PlayCircle />
-            </IconButton>
+          <PermissionWarp role={[UserRole.SuperAdmin, UserRole.Director]}>
+            <Tooltip title="Hủy">
+              <IconButton
+                onClick={() => {
+                  setSelected(params.row);
+                  setIsOpenModalCancel(true);
+                }}
+                color="primary"
+                aria-label="cancel"
+                disabled={![ProjectStatus.Doing].includes(params.row.status)}
+              >
+                <DoDisturbOnIcon />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Hoàn thành">
+              <IconButton
+                onClick={() => {
+                  handleSubmit(params.row);
+                }}
+                color="primary"
+                aria-label="doing"
+                disabled={
+                  ![ProjectStatus.Doing].includes(params.row.status) ||
+                  params.row.phases.filter(
+                    (p) => p.contract.status != ContractStatus.Done
+                  ).length > 0
+                }
+              >
+                <PlayCircle />
+              </IconButton>
+            </Tooltip>
           </PermissionWarp>
         </Box>
       ),

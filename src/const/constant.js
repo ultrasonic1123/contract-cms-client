@@ -6,7 +6,7 @@ export const JobStatus = {
 };
 
 export const ContractStatus = {
-  Pending: "Đang sử lý",
+  Pending: "Đang xử lý",
   Signing: "Đã ký",
   Doing: "Đang thực hiện",
   Done: "Đã hoàn thành",

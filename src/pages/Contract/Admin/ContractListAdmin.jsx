@@ -11,6 +11,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Tooltip,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import {
@@ -170,7 +171,6 @@ const ContractListAdmin = () => {
             to={`/contracts/edit/${params.row.id}`}
             color="primary"
             aria-label="view"
-            disabled={![ContractStatus.Pending].includes(params.row.status)}
           >
             <Visibility />
           </IconButton>
@@ -182,57 +182,59 @@ const ContractListAdmin = () => {
             }}
             color="primary"
             aria-label="jobs"
-            disabled={[
-              ContractStatus.Doing,
-              ContractStatus.Done,
-              ContractStatus.PendingCancel,
-              ContractStatus.Comfirm,
-              ContractStatus.Pending,
-            ].includes(params.row.status)}
+            disabled={[ContractStatus.Comfirm, ContractStatus.Pending].includes(
+              params.row.status
+            )}
           >
             <WorkHistoryIcon />
           </IconButton>
 
-          <IconButton
-            onClick={() => {
-              setSelectedContract(params.row);
-              setIsOpenModalCancel(true);
-            }}
-            color="primary"
-            aria-label="cancel"
-            disabled={[
-              ContractStatus.Cancel,
-              ContractStatus.Done,
-              ContractStatus.PendingCancel,
-              ContractStatus.Pending,
-              ContractStatus.Comfirm,
-              ContractStatus.Signing,
-            ].includes(params.row.status)}
-          >
-            <DoDisturbOnIcon />
-          </IconButton>
+          <Tooltip title={"Xác nhận ký"}>
+            <IconButton
+              onClick={() => {
+                handleSubmit(params.row, "sign");
+              }}
+              color="primary"
+              aria-label="sign"
+              disabled={![ContractStatus.Pending].includes(params.row.status)}
+            >
+              <Assessment />
+            </IconButton>
+          </Tooltip>
 
-          <IconButton
-            onClick={() => {
-              handleSubmit(params.row, "sign");
-            }}
-            color="primary"
-            aria-label="sign"
-            disabled={![ContractStatus.Pending].includes(params.row.status)}
-          >
-            <Assessment />
-          </IconButton>
+          <Tooltip title="Xác nhận thực hiện">
+            <IconButton
+              onClick={() => {
+                handleSubmit(params.row, "doing");
+              }}
+              color="primary"
+              aria-label="doing"
+              disabled={![ContractStatus.Signing].includes(params.row.status)}
+            >
+              <PlayCircle />
+            </IconButton>
+          </Tooltip>
 
-          <IconButton
-            onClick={() => {
-              handleSubmit(params.row, "doing");
-            }}
-            color="primary"
-            aria-label="doing"
-            disabled={![ContractStatus.Signing].includes(params.row.status)}
-          >
-            <PlayCircle />
-          </IconButton>
+          <Tooltip title="Hủy">
+            <IconButton
+              onClick={() => {
+                setSelectedContract(params.row);
+                setIsOpenModalCancel(true);
+              }}
+              color="primary"
+              aria-label="cancel"
+              disabled={[
+                ContractStatus.Cancel,
+                ContractStatus.Done,
+                ContractStatus.PendingCancel,
+                ContractStatus.Pending,
+                ContractStatus.Comfirm,
+                ContractStatus.Signing,
+              ].includes(params.row.status)}
+            >
+              <DoDisturbOnIcon />
+            </IconButton>
+          </Tooltip>
         </Box>
       ),
     },

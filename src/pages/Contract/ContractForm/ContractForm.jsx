@@ -27,6 +27,7 @@ import { FileDownload } from "@mui/icons-material";
 import ModalViewPdf from "../ModalViewPdf";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { useSelector } from "react-redux";
+import { ContractStatus } from "../../../const/constant";
 
 const ContractCreate = () => {
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ const ContractCreate = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [allServices, setAllServices] = useState([]);
   const [amount, setAmount] = useState(0);
+  const [contractStatus, setContractStatus] = useState(0);
   const [loading, setLoading] = useState(false);
   const [url, setUrl] = useState("");
   const [selectedJobs, setSelectedJobs] = useState([]);
@@ -80,6 +82,7 @@ const ContractCreate = () => {
             : null
         );
         setAmount(data.amount);
+        setContractStatus(data.status);
       }
     } catch (e) {
       console.log(e);
@@ -355,6 +358,7 @@ const ContractCreate = () => {
           variant="contained"
           color="primary"
           sx={{ mt: 2 }}
+          disabled={contractStatus != ContractStatus.Pending}
         >
           Lưu Hợp Đồng
         </Button>

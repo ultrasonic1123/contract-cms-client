@@ -180,13 +180,9 @@ const ContractList = () => {
             }}
             color="primary"
             aria-label="jobs"
-            disabled={[
-              ContractStatus.Doing,
-              ContractStatus.Done,
-              ContractStatus.PendingCancel,
-              ContractStatus.Comfirm,
-              ContractStatus.Pending,
-            ].includes(params.row.status)}
+            disabled={[ContractStatus.Comfirm, ContractStatus.Pending].includes(
+              params.row.status
+            )}
           >
             <WorkHistoryIcon />
           </IconButton>

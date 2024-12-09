@@ -214,7 +214,7 @@ const DashboardPage = () => {
   const contractStatusData = [
     {
       name: "Đang xử lý",
-      value: contracts.filter((x) => x.status === "Đang sử lý").length,
+      value: contracts.filter((x) => x.status === "Đang xử lý").length,
     },
     {
       name: "Đã ký",
