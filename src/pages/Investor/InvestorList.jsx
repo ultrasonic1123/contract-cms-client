@@ -12,8 +12,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../const/api";
 import { Add, FileDownloadOutlined, Visibility } from "@mui/icons-material";
-import { PermissionWarp } from "../../layout/components";
-import { UserRole } from "../../const/constant";
+import InputSearch from "../../components/InputSearch";
 
 const columns = [
   {
@@ -77,6 +76,7 @@ const InvestorList = () => {
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState([]);
   const [isDownLoad, setIsDownLoad] = useState(false);
+  const [search, setSearch] = useState("");
 
   const handleCreateInvestor = () => {
     navigate("/investors/create");
@@ -84,7 +84,7 @@ const InvestorList = () => {
 
   const getInvestors = async () => {
     try {
-      const { data } = await axios.get(`${BASE_URL}/investor`);
+      const { data } = await axios.get(`${BASE_URL}/investor?search=${search}`);
       setRows(data.data.results);
     } catch (e) {
       console.log("Error when get investors", e);
@@ -118,7 +118,7 @@ const InvestorList = () => {
 
   useEffect(() => {
     getInvestors();
-  }, []);
+  }, [search]);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -126,6 +126,11 @@ const InvestorList = () => {
         <Link to="/">Trang Chủ</Link>
         <Typography color="text.primary">Danh Sách Chủ Đầu Tư</Typography>
       </Breadcrumbs>
+
+      <Box sx={{ display: "flex" }}>
+        <InputSearch value={search} setValue={setSearch} />
+      </Box>
+
       <Box sx={{ display: "flex", justifyContent: "end" }}>
         <Button
           variant="contained"
@@ -137,6 +142,7 @@ const InvestorList = () => {
           Thêm Chủ Đầu Tư
         </Button>
       </Box>
+
       <Card style={{ width: "100%" }}>
         <DataGrid
           rows={rows}

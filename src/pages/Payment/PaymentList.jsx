@@ -5,6 +5,10 @@ import {
   Breadcrumbs,
   Card,
   IconButton,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,6 +20,7 @@ import { BillStatus } from "../../const/constant";
 import { confirm, ConfirmProvider } from "material-ui-confirm";
 import axios from "axios";
 import formatMoney from "../../helpers/formatMoney";
+import InputSearch from "../../components/InputSearch";
 
 const PaymentList = () => {
   const navigate = useNavigate();
@@ -23,6 +28,8 @@ const PaymentList = () => {
   const [loading, setLoading] = useState(true);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [payment, setPayment] = useState();
+  const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
 
   const handleSubmit = (type, id) => {
     const title = type
@@ -147,7 +154,11 @@ const PaymentList = () => {
   const getPayments = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${BASE_URL}/payment`);
+      const filterText =
+        filter !== "all" ? `filter={"status": "${filter}"}` : "";
+      const res = await fetch(
+        `${BASE_URL}/payment?search=${search}&${filterText}`
+      );
       const { data } = await res.json();
       setPayments(
         data?.results?.map((item) => ({
@@ -169,7 +180,7 @@ const PaymentList = () => {
 
   useEffect(() => {
     getPayments();
-  }, []);
+  }, [search, filter]);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -180,6 +191,33 @@ const PaymentList = () => {
         <Link to="/">Trang Chủ</Link>
         <Typography color="text.primary">Danh Sách Thanh Toán</Typography>
       </Breadcrumbs>
+
+      <Box sx={{ display: "flex" }}>
+        <InputSearch value={search} setValue={setSearch} />
+        <Box sx={{ minWidth: 240, marginInlineStart: 2 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={filter}
+              label="Trạng thái"
+              onChange={(e) => setFilter(e.target.value)}
+              size="small"
+            >
+              {Object.values(BillStatus).map((v, index) => {
+                return (
+                  <MenuItem key={index} value={v}>
+                    {v}
+                  </MenuItem>
+                );
+              })}
+              <MenuItem value={"all"}>Tất cả</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+      </Box>
+
       <Box sx={{ display: "flex", justifyContent: "end" }}>
         <Button
           variant="contained"

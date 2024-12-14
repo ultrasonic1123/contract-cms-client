@@ -6,6 +6,10 @@ import {
   Card,
   IconButton,
   Tooltip,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useNavigate, Link } from "react-router-dom";
@@ -18,6 +22,7 @@ import { ContractStatus, ProjectStatus, UserRole } from "../../const/constant";
 import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 import ModalCancel from "../Project/ModalCancel";
 import { confirm } from "material-ui-confirm";
+import InputSearch from "../../components/InputSearch";
 
 const ProjectList = () => {
   const [loading, setLoading] = useState(true);
@@ -25,6 +30,8 @@ const ProjectList = () => {
   const [rows, setRows] = useState([]);
   const [selected, setSelected] = useState();
   const [isOpenModalCancel, setIsOpenModalCancel] = useState(false);
+  const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
 
   const handleSubmit = (item) => {
     confirm({
@@ -153,7 +160,12 @@ const ProjectList = () => {
   const getProjects = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`${BASE_URL}/project`);
+      const filterText =
+        filter !== "all" ? `filter={"status": "${filter}"}` : "";
+
+      const { data } = await axios.get(
+        `${BASE_URL}/project?search=${search}&${filterText}`
+      );
       setRows(
         data.data.results.map((item) => ({
           ...item,
@@ -169,7 +181,7 @@ const ProjectList = () => {
 
   useEffect(() => {
     getProjects();
-  }, []);
+  }, [search, filter]);
 
   return (
     <Box sx={{ p: 3, justifyContent: "start", width: "100%" }}>
@@ -182,6 +194,33 @@ const ProjectList = () => {
         <Link to="/">Trang chủ</Link>
         <Typography color="text.primary">Quản Lý Dự Án</Typography>
       </Breadcrumbs>
+
+      <Box sx={{ display: "flex" }}>
+        <InputSearch value={search} setValue={setSearch} />
+        <Box sx={{ minWidth: 240, marginInlineStart: 2 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={filter}
+              label="Trạng thái"
+              onChange={(e) => setFilter(e.target.value)}
+              size="small"
+            >
+              {Object.values(ProjectStatus).map((v, index) => {
+                return (
+                  <MenuItem key={index} value={v}>
+                    {v}
+                  </MenuItem>
+                );
+              })}
+              <MenuItem value={"all"}>Tất cả</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+      </Box>
+
       <Box sx={{ display: "flex", justifyContent: "end" }}>
         <Button
           variant="contained"

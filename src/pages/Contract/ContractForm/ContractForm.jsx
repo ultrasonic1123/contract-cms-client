@@ -42,7 +42,7 @@ const ContractCreate = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [allServices, setAllServices] = useState([]);
   const [amount, setAmount] = useState(0);
-  const [contractStatus, setContractStatus] = useState(0);
+  const [contractStatus, setContractStatus] = useState();
   const [loading, setLoading] = useState(false);
   const [url, setUrl] = useState("");
   const [selectedJobs, setSelectedJobs] = useState([]);
@@ -358,7 +358,7 @@ const ContractCreate = () => {
           variant="contained"
           color="primary"
           sx={{ mt: 2 }}
-          disabled={contractStatus != ContractStatus.Pending}
+          disabled={contractStatus && contractStatus != ContractStatus.Pending}
         >
           Lưu Hợp Đồng
         </Button>
